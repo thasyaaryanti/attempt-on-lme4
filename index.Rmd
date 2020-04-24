@@ -1,5 +1,47 @@
 ---
-title: "Welcome to my website!"
+output:  html_document
 ---
 
-You're up and running!
+<h1>UNSW Psychology Honours PSYC4093 Elective</h1>
+<h2>Robust Data Tools Project</h2>
+<h4>Thasya Aryanti z5125631</h4>
+
+
+<style type="text/css">
+
+html, body {
+    overflow-y:hidden;
+}
+
+h1 {
+  font-size: 15px;
+  color: Grey;
+  text-align: center;
+   line-height: 490px;
+    height: 10px;
+}
+h2 {
+  font-size: 32px;
+  color: SlateGrey;
+  text-align: center;
+   line-height: 500px;
+    height: 20px;
+}
+h4{ /* Header 4 - and the author and data headers use this too  */
+  font-size: 20px;
+  color: Grey;
+  font-style: italic;
+  text-align: center;
+   line-height: 510px;
+    height: 10px;
+}
+
+a {
+  color: skyblue;
+  line-height: 600px;
+  height: 10px;
+}
+</style>
+
+<a href = file.html><p style="text-align:center"> Click here to start reading </p></a>
+

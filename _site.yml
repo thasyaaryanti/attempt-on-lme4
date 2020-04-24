@@ -1,17 +1,17 @@
 name: "Attempt on lme4"                                # CHANGE HERE 
 output_dir: "."
 navbar:
-  title: "Attempt on lme4"                             # CHANGE HERE 
+  title: <a class="navbar-brand" href="file.html">Attempt on lme4</a> # CHANGE HERE 
   type: inverse
   left:
     - text: "Scripts"
       menu: 
         - text: "lme4"
           href: lme4.html
-        - text: "Rmd"
-          href: rmd.html
         - text: "ggplot"
           href: ggplot.html
+        - text: "Website"
+          href: rmd.html
     - text: "References"
       href: references.html 
   right:
@@ -19,7 +19,5 @@ navbar:
       href: https://github.com/thasyaaryanti/attempt-on-lme4
 output:
   html_document:
-    toc: true
-    toc_float: true
     theme: lumen
     highlight: default

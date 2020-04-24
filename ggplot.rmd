@@ -1,1 +1,18 @@
+---
+title: "ggplot Script"
+---
 
+
+<style>
+
+h1.title {
+  font-size: 32px;
+  color: slategrey;
+}
+
+h3 {
+  font-size: 20px;
+  color: grey;
+}
+
+</style>

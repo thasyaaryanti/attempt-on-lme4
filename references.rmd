@@ -1,1 +1,38 @@
+---
+title: "References"
+---
 
+### Data
+
+- Rastle, K., Davis, M. H., & New, B. (2004). The broth in my brother’s brothel: Morpho-orthographic segmentation in visual word recognition. Psychonomic Bulletin & Review, 11(6), 1090-1098. https://doi.org/10.3758/BF03196742
+
+- Rastle, Davis, & New (2004) [data and stimuli](https://osf.io/hjuws/) 
+
+- 
+
+### Git Repository
+
+- Florian Privé's [RMarkdown Website Template](https://github.com/privefl/rmarkdown-website-template)
+
+### RMarkdown
+
+- RMarkdown formatting [guide](https://bookdown.org/yihui/rmarkdown/html-document.html)
+
+- Emily C. Zabor's [RMarkdown tutorial](https://www.emilyzabor.com/tutorials/rmarkdown_websites_tutorial.html)
+
+- Monash Bioinformatics Platform's [writing documents with RMarkdown](https://monashbioinformaticsplatform.github.io/2017-11-16-open-science-training/topics/rmarkdown.html)
+
+
+<style>
+
+h1.title {
+  font-size: 32px;
+  color: slategrey;
+}
+
+h3 {
+  font-size: 20px;
+  color: grey;
+}
+
+</style>
