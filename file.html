@@ -317,7 +317,7 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Attempt on lme4</h1>
+<h1 class="title toc-ignore">Attempt on <code>lme4</code></h1>
 
 </div>
 
@@ -347,6 +347,48 @@ $(document).ready(function () {
 </div>
 <div id="results-comparison" class="section level2">
 <h2>Results comparison</h2>
+<p>The descriptive statistics in the paper were presented in a table form. As a person who prefers visual data, I decided to present my descriptive statistics in graph formats (full <code>ggplot2</code> script can be accessed <a href="ggplot.html">here</a>).</p>
+<div id="experiment-items-descriptive-statistics" class="section level3">
+<h3>Experiment items descriptive statistics</h3>
+<div id="original-experimental-items-descriptive-statistics-table" class="section level5">
+<h5>Original experimental items descriptive statistics table</h5>
+<p><img src="stimuli.png" /></p>
+</div>
+<div id="descriptive-statistics-graphs" class="section level5">
+<h5>Descriptive statistics graphs</h5>
+<p><img src="targetwords.png" class="center"></p>
+<p><img width="45%" src="suffixlength.png"/> <img width="45%" src="stemlength.png"/></p>
+<p>From the graphs above, we can see that stem and suffix length frequency were matched between related (priming) and unrelated (control) priming condition. However, because of a small discrepancy stem length frequency were not entirely equal across all condition, and thus included as a covariate in the mixed model.</p>
+<p>When comparing these graphs to the Average attributes of target words graph above, we see that stem frequency for the prime words are generally longer than suffixes. That is stem related primes are inevitably more similar to the target stem length than suffix related primes. That being said, this is then controlled by the orthographic overlap between the conditions.</p>
+<p><img width="45%" src="orthoverlap.png"/> <img width="45%" src="primefq.png"/></p>
+<p>The difference in orthographic overlap between stem (.62 − .27 = .35) and suffix (.42 − .13 = .29) condition are close to similar for both related and unrelated primes.</p>
+</div>
+</div>
+<div id="experiment-data-descriptive-statistics" class="section level3">
+<h3>Experiment data descriptive statistics</h3>
+<div id="original-experimental-items-descriptive-statistics-table-1" class="section level5">
+<h5>Original experimental items descriptive statistics table</h5>
+<p><img src="data.png" /></p>
+</div>
+<div id="descriptive-statistics-graphs-1" class="section level5">
+<h5>Descriptive statistics graphs</h5>
+<p><img width="45%" src="dataplot.png"/> <img width="45%" src="accuracy.png"/></p>
+<p>Responses were generally accurate in all four conditions as outliers were excluded from further analysis.</p>
+<p>The results from the linear mixed model analysis suggested a main effect of relation factor (i.e., related prime vs unrelated prime), <em>F</em>(1, 2111.2) = 12.19, <em>p</em> &lt; 0.001, a main effect of condition factor (i.e., stem vs suffix), <em>F</em>(1, 2114.3) = 9.15, <em>p</em> = 0.003, but no interaction effect between relation and condition factor, <em>F</em>(1, 2110.9) = 2.09, <em>p</em> = 0.148.</p>
+<p><br></p>
+</div>
+</div>
+</div>
+<div id="discussion" class="section level2">
+<h2>Discussion</h2>
+<p>In Experiment 1, the results showed significant morphological priming when target words are primed with a morphologically realted stem (i.e. _<strong>mam</strong>ov-<strong>MAM</strong>AM), as compared to when it is primed with a morphologically unrelated nonword (i.e., nonword primes that did not share any orthography or morphology overlap with the target; Marjanovič &amp; Crepaldi, 2020). This result is well established from multiple studies including those by Rastle, Davis, &amp; New (2004).</p>
+<p>As with suffix priming, data seems to be unclear as compared to those of stem priming. While the magnitude of the difference between priming and control condition when the prime and the target shared the same suffix is way smaller (i.e., 738.17-724.37 = 13.8ms) than those of stem condition (i.e., 709.84-687.94 = 21.9ms), the interaction between relation and condition is not significant which suggests that suffix priming and stem priming are not significantly different (Marjanovič &amp; Crepaldi, 2020). Thus, this is further analysed in Experiment 2 of the paper.</p>
+<p><br></p>
+</div>
+<div id="conclusion" class="section level2">
+<h2>Conclusion</h2>
+<p>Overall, even though I did not manage to analyse the data with <code>lme4</code> without the help of the original script, I am glad that I at least tried it out. I realised that there is so much to learn, not only with the package itself, but the concept of linear mixed effects model as well.</p>
+<p>With this project, apart from trying the <code>lme4</code> package, I also managed to experiment more with RMarkdown, <code>ggplot2</code>, <code>dplyr</code>, as well as trying other different packages from <code>car</code> to <code>reshape2</code>.</p>
 <style>
 
 h1.title {
@@ -360,7 +402,7 @@ h2 {
 }
 
 h3 {
-  font-size: 25px;
+  font-size: 22px;
   color: grey;
 }
 
@@ -375,6 +417,14 @@ h5 {
     font-size: 15px;
     color: darkslategrey;
 }
+
+img.center {
+display: block;
+margin-left: auto;
+margin-right: auto;
+width: 45%
+}
+
 </style>
 </div>
 

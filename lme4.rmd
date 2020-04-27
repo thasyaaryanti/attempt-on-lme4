@@ -156,7 +156,7 @@ source("diagf.R");
 diagnostics.f(expdata$RT, expdata$Accuracy, expdata$SubjectID, expdata$target, expdata$category , "outliers")
 ```
 
-![From the graphs above, we can see several outliers within the subjects and the target words used. As stated in Marjanovic & Crepaldi (2020), subject 13 and target word 39 would be excluded from further analysis. Under the histogram, we can also see some responses with 0.0 response times. These are perhaps trials where no responses were provided, hence these will also be removed.](outliers.jpg)
+![From the graphs above, we can see several outliers within the subjects and the target words used. As stated in Marjanovic & Crepaldi  (2020), subject 13 and target word 39 would be excluded from further analysis. Under the histogram, we can also see some responses with 0.0 RT. These are perhaps trials where no responses were provided, hence these will also be removed.](outliers.jpg)
 
 
 ```{r outlierhandling}
@@ -181,7 +181,7 @@ aggregate(Accuracy ~ Condition, FUN=sd, data=expdata_2);
 ```
 #### lme4 trial
 
-After modifying the dataset, it is time to attempt on `lme4`. As a first-timer in `lme4`, it is great that I have the analysis and results from the paper where the data is from, to compare and see whether my analysis is correct.
+After modifying the dataset, it is time to attempt on `lme4`. As a first-timer in `lme4`, it is great to have the analysis and results from the paper where the data came from, to compare and see whether my analysis is correct.
 
 ##### Trial 1
 
@@ -294,7 +294,7 @@ After hours of reading through forums and papers, I realised that perhaps p-valu
 null <- lmer(invcrt ~ primeFreq + (1|target.x) + (1|SubjectID), data = all, REML = FALSE)
 ```
 
-Then, the model with the factor that I am interested in. This time I tried the condtion factor. I did not analyse interaction here because it needs to be compared with a different null, which I did later on.
+Then, the model with the factor that I am interested in. This time I tried the condition factor. I did not analyse interaction here because it needs to be compared with a different null, which I did later on.
 
 ```{r condmodel, results= 'hide', warning= FALSE, message= FALSE}
 cond_lmer <- lmer(invcrt ~ cond+primeFreq+(1|target.x)+(1|SubjectID), data = all, REML = FALSE)
@@ -309,6 +309,9 @@ Chi Square p-values are not significant. Next I tried to do the same with the re
 
 ```{r relmodel, results= 'hide', warning= FALSE, message= FALSE}
 relation_lmer <- lmer(invcrt ~ relation+primeFreq+(1|target.x)+(1|SubjectID), data = all, REML = FALSE)
+```
+
+```{r relmodel2}
 anova(null, cond_lmer)
 ```
 Both yielded results that were not significant which were significant in the paper. However, before I move on to the next trial, I tried to analyse the interaction to see whether this method could give me similar results as what was reported in the paper.
@@ -321,7 +324,7 @@ int_lmer <- lmer(invcrt ~ cond*relation + primeFreq + (1|target.x) + (1|SubjectI
 anova(null_int, int_lmer)
 ```
 
-Results still aren't right. Along with that, I am pretty unfamiliar with Chi Square Tests as I've never done it before. I wasn't sure what was wrong. Is it because of my `lme4` codes? Or is it because my data set is wrong entirely. Hence, in the next trial I decided to start afresh and code a new script based on the original script and see if I can get the same results as reported in the paper.
+Results still aren't right. Along with that, I am pretty unfamiliar with Chi Square Tests as I've never done it before. I wasn't sure what was wrong. Is it because of my `lme4` codes? Or is it because my data set is wrong entirely? Hence, in the next trial I decided to start afresh and code a new script based on the original script and see if I can get the same results as reported in the paper.
 
 ##### Trial 5
 
@@ -446,7 +449,7 @@ hist(data$RT[data$RT>1.3 & data$Accuracy==1], breaks=seq(1.3,2,.05))
 
 ![Same output for outliers check.](OutliersCheck.jpg)
 
-Next, is cleaning up the data. One step that I did differently, or at least in different sequence than the researcher. I, for one thing, did not create two subset, but one.
+Next, is cleaning up the data. One step that I did differently, or at least in different sequence than the researcher. I, for one thing, did not create two subsets, but one.
 
 ```{r oriscript7}
 #clean data
@@ -486,7 +489,8 @@ summary(modelRT);
 Anova(modelRT, type=3, test.statistic='F')
 ```
 
-The next script, the researcher analysed the differences from the outputs, if outliers were excluded from the analysis. However, I decided to not run the remaining script. Prior to this trial, I have copied the exact script with the exact format into a new RSTudio window. I ran the script and results were exactly right and were the values reported on the paper. As the previous `Anova` analysis did not yield the same results, I decided to terminate this trial.
+The next script, the researcher analysed the differences from the outputs, if outliers were excluded from the analysis. However, I decided to not run the remaining script. Prior to this trial, I have copied the exact script with the exact format into a new RStudio window. I ran the script, and results were exactly right and were the values reported on the paper. As the previous `Anova` analysis did not yield the same results, I decided to terminate this trial.
+
 ```{r oriscript9.2, results= 'hide'}
 # run the model without the outliers terminated
 modelRTb <- lmer(-1000/RTms ~  relation * cond+ primeFreq  + (1| SubjectID) + (1| target.x ), data=subset(dataRt, abs(scale(resid(modelRT)))<2.5),  REML=T);
@@ -495,7 +499,7 @@ summary(modelRTb)
 
 ##### Trial 6
 
-At this point, I am lost and frustrated as I do not know what have I done wrong. One major difference between my script and the original script is the way in which new variables were created. In my script, I have used `mutate` and `ifelse` functions, whereas the original script created new variables in a different way. I do not know if this makes any difference and whether it will affect the analysis, but I couldn't think of anything else that I did differently to the original code in **Trial 5**.
+At this point, I am lost and frustrated as I do not know what I did wrong. One major difference between my script and the original script is the way in which new variables were created. In my script, I have used `mutate` and `ifelse` functions, whereas the original script created new variables in a different way. I do not know if this makes any difference and whether it will affect the analysis, but I couldn't think of anything else that I did differently to the original code in **Trial 5**.
 
 Hence, being really lost, in this trial, I am very sad (*really sad*) to say that I will use the *exact copy* of the original script to conduct the analysis.
 
@@ -666,7 +670,7 @@ As mentioned in the paper, when reference level was set to suffix, the relation 
 
 ### Remarks on my attempt with lme4
 
-After several days and 6 trials with analysing a data with `lme4`, I realised that this is a very complicated package to use and understand. My mind is tired, confused, frustrated that I had to end up using the original script to attain the results. There is so much for me to learn with `lme4`, and I believe that starting from the bottom, the very beginning in understanding the concept of linear mixed model would be the best choice.
+After several days and six trials with analysing a data with `lme4`, I realised that this is a very complicated package to use and understand. My mind is tired, confused, frustrated that I had to end up using the original script to attain the results. There is so much for me to learn with `lme4`, and I believe that starting from the bottom, the very beginning in understanding the concept of linear mixed model would be the best choice.
 
 Now moving on to [plotting](ggplot.html) the results to tables and graphs.
 
