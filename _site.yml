@@ -1,20 +1,24 @@
-name: "Attempt on lme4"                                # CHANGE HERE 
+name: "Attempt on lme4"                                
 output_dir: "."
 navbar:
-  title: <a class="navbar-brand" href="file.html">Attempt on lme4</a> # CHANGE HERE 
+  title: <a class="navbar-brand" href="file.html">Attempt on lme4</a>  
   type: inverse
   left:
     - text: "Scripts"
       menu: 
-        - text: "lme4"
+        - text: "Data analysis"
           href: lme4.html
         - text: "ggplot"
           href: ggplot.html
         - text: "Website"
           href: rmd.html
+        - text: "Outliers analysis"
+          href: diagf.html
     - text: "References"
       href: references.html 
   right:
+    - text: "Thasya Aryanti z5125631"
+      href: file.html
     - icon: fa-github
       href: https://github.com/thasyaaryanti/attempt-on-lme4
 output:

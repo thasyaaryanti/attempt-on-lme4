@@ -1,6 +1,465 @@
 ---
 title: "ggplot Script"
 ---
+```{r load, results='hide', message=FALSE}
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(wesanderson)
+library(reshape2)
+```
+
+```{r data, include=FALSE}
+#import stimuli features file
+stim1 <- read.csv(file = "StimuliProperties_Experiment1.csv", head = TRUE, sep = ",")
+summary(stim1);
+#create variable condition
+stim1$condition <- 'condition';
+stim1$condition[stim1$primingMorpheme == 'suffix' & stim1$relatedness == 'rel'] <- 'suffix_priming'
+stim1$condition[stim1$primingMorpheme == 'suffix' & stim1$relatedness == 'cntr'] <- 'suffix_control'
+stim1$condition[stim1$primingMorpheme == 'stem' & stim1$relatedness == 'rel'] <- 'stem_priming'
+stim1$condition[stim1$primingMorpheme == 'stem' & stim1$relatedness == 'cntr'] <- 'stem_control'
+stim1$condition <- factor(stim1$condition);
+stim1$primeFreq <-as.double(stim1$primeFreq);
+stim1$primeStemLength <- stim1$PrimeLength-stim1$primeSuffixLength;
+stim1$targetStemLength <- stim1$targetLength-stim1$targetSuffixLength;
+
+tstem_mean <- aggregate(targetStemLength ~ condition, FUN=mean, data=stim1);
+tstem_sd <- aggregate(targetStemLength~ condition, FUN=sd, data = stim1);
+prstem_mean <- aggregate(primeStemLength ~ condition, FUN=mean, data=stim1);
+prstem_sd <- aggregate(primeStemLength~ condition, FUN=sd, data = stim1);
+tsuffix_mean <- aggregate(targetSuffixLength ~ condition, FUN=mean, data=stim1);
+tsuffix_sd <- aggregate(targetSuffixLength~ condition, FUN=sd, data = stim1);
+prsuffix_mean <- aggregate(primeSuffixLength ~ condition, FUN=mean, data=stim1);
+prsuffix_sd <- aggregate(primeSuffixLength~ condition, FUN=sd, data = stim1);
+tfq_mean <- aggregate(log10(targetFreq) ~ condition, FUN=mean, data=stim1);
+tfq_sd <- aggregate(log10(targetFreq) ~ condition, FUN=sd, data = stim1);
+prfq_mean <- aggregate(log10(primeFreq) ~ condition, FUN=mean, data=stim1);
+prfq_sd <- aggregate(log10(primeFreq) ~ condition, FUN=sd, data = stim1);
+orth_mean <- aggregate(orthOverlap ~ condition, FUN=mean, data=stim1);
+orth_sd <- aggregate(orthOverlap~ condition, FUN=sd, data = stim1)
+
+read.csv(file = "Data_Experiment1.csv", head = TRUE, sep = ",") -> data1;
+summary(data1);
+#create a variable for target word
+data1$target <- data1$TrialID-100;
+data1$target[data1$TrialID>199 & data1$TrialID<299] <- data1$target[data1$TrialID>199 & data1$TrialID<299]-100;
+data1$target[data1$TrialID>299 & data1$TrialID<399] <- data1$target[data1$TrialID>299 & data1$TrialID<399]-200;
+data1$target[data1$TrialID>399 & data1$TrialID<499] <- data1$target[data1$TrialID>399 & data1$TrialID<499]-300;
+
+#factor sbj and items
+data1$target <- factor(data1$target);
+data1$SubjectID <- factor(data1$SubjectID);
+
+#create new variables "cond": suffix/stem and "relation": control/prime
+data1$cond <- 'stem';
+data1$cond[data1$Condition == 'suffix_priming'] <- 'suffix';
+data1$cond[data1$Condition == 'suffix_control'] <- 'suffix';
+data1$cond[data1$Condition == 'nonword'] <- NA;
+data1$relation<- 'control';
+data1$relation[data1$Condition == 'suffix_priming'] <- 'prime';
+data1$relation[data1$Condition == 'stem_priming'] <- 'prime';
+data1$relation[data1$Condition == 'nonword'] <- NA;
+# convert the new variables to factors
+data1$relation <- factor(data1$relation); 
+data1$cond <- factor(data1$cond); 
+
+## run the diagnostics, to check for outliers in subjects and items based on RT and accuracy
+data1$lexicality = "word"
+data1$lexicality[data1$Condition == 'nonword'] <- 'nonword'
+data1$lexicality = factor(data1$lexicality)
+
+data1Acc <- subset(data1, Condition != 'nonword' & SubjectID != '13' & target != '39' & RT>0);
+summary(data1Acc);
+data1Rt <- subset(data1Acc, Accuracy == 1); 
+summary(data1Rt);
+
+#convert s to ms on the RT
+data1Rt$RTms <- 1000*data1Rt$RT;
+
+#descriptive stats
+data_mean <- aggregate(RTms ~ Condition, FUN=mean, data=data1Rt); 
+data_sd <- aggregate(RTms ~ Condition, FUN=sd, data = data1Rt);
+#checking medians too, RTs are quite long:
+aggregate(RTms ~ Condition, FUN=median, data=data1Rt); 
+aggregate(RTms ~ Condition, FUN=IQR, data=data1Rt); 
+#descriptive stats
+acc_mean <- aggregate(Accuracy ~ Condition, FUN=mean, data=data1Acc);
+acc_sd <- aggregate(Accuracy ~ Condition, FUN=sd, data=data1Acc)
+```
+
+
+
+### Stimuli descriptive statistics
+
+#### Graph 1 : Target Words
+
+##### Binding tables
+
+```{r binding1}
+target_sd <- left_join(tstem_sd, tsuffix_sd, by = c('condition'))
+target_sd <- left_join(target_sd, tfq_sd, by = c('condition'))
+target_sd <- melt(target_sd, id=c("condition"))
+
+target_word <- left_join(tstem_mean, tsuffix_mean, by = c('condition'))
+target_word <- left_join(target_word, tfq_mean, by = c('condition'))
+target_word <- melt(target_word, id=c("condition"))
+
+target_word <- left_join(target_word, target_sd, by = c('condition', 'variable'))
+```
+
+##### Cleaning up
+
+Since target words were the same regardless of the condition, I renamed one condition and removed the others.
+```{r cleaning1}
+target_word<- target_word %>%
+  filter(condition == "stem_control")
+
+target_word <- target_word %>%
+  rename(SD = value.y)
+target_word <- target_word %>%
+  rename(value = value.x)
+
+target_word[1] = 'target words'
+```
+
+##### Plotting
+
+```{r ggplot1}
+plot1 <- ggplot(data = target_word, mapping = aes(x = variable, y = value, fill = variable)) +
+  geom_col()+
+  geom_errorbar(aes(ymin = value - SD, ymax = value + SD), width = .2) + 
+  theme_minimal()+
+  scale_x_discrete(labels = c("Stem length",
+                              "Suffix length",
+                              "Target frequency"),
+                         name = NULL) +
+  scale_y_continuous(name = NULL,
+                     breaks = seq(0, 5, 0.5)) +
+  scale_fill_manual(values = wes_palette("Moonrise3", n= 3),
+                    guide = "none")+
+  ggtitle(label = "Average attributes for target words") +
+  theme(plot.title = element_text(size = "11",
+                                  hjust = "0.5"))
+
+print(plot1)
+```
+
+```{r save1, message= FALSE, results='hide'}
+ggsave(filename = "targetwords.png", plot = plot1)
+```
+
+#### Graph 2 : Orthographic overlap
+
+##### Binding and cleaning
+
+```{r binding2}
+orth_sd <- melt(orth_sd, id=c("condition"))
+orth_sd <- orth_sd %>%
+  rename(SD = value)
+orth_mean <- melt(orth_mean, id=c("condition"))
+orth <- left_join(orth_mean, orth_sd, by =c("condition", "variable"))
+
+orth <- mutate(orth, relation = ifelse(orth$condition == "stem_control",
+                                       "Unrelated prime",
+                                       ifelse(orth$condition == "suffix_control",
+                                              "Unrelated prime", "Related prime")))
+
+orth <- mutate(orth, cond = ifelse(orth$condition == "stem_control",
+                                       "stem",
+                                       ifelse(orth$condition == "stem_priming",
+                                              "stem", "suffix")))
+```
+
+##### Plotting
+
+```{r plot2}
+plot2 <- ggplot(data = orth, mapping = aes(x = cond, y = value, fill = cond))+
+  geom_col()+
+  geom_errorbar(aes(ymin = value - SD, ymax = value + SD), width = .2)+
+  facet_wrap(vars(relation), strip.position = "bottom")+
+  theme_minimal()+
+  scale_x_discrete(labels = NULL,
+                   name = NULL)+
+  scale_y_continuous(name = NULL)+
+  scale_fill_manual(values = wes_palette
+                    (name = "GrandBudapest2", n= 2),
+                    name = "Condition",
+                    labels = c("Stem",
+                               "Suffix"))+
+  ggtitle(label = "Orthographic overlap between target and prime words")+
+  theme(plot.title = element_text(size = "11",
+                                  hjust = "0.5"))
+
+print(plot2)
+```
+
+```{r save2, message= FALSE, results='hide'}
+ggsave(filename = "orthoverlap.png", plot = plot2)
+```
+
+#### Graph 3 : Prime frequency
+
+##### Binding and cleaning
+
+```{r binding3}
+prfq_sd <- melt(prfq_sd, id=c("condition"))
+prfq_sd <- prfq_sd %>%
+  rename(SD = value)
+prfq_mean <- melt(prfq_mean, id=c("condition"))
+prfq <- left_join(prfq_mean, prfq_sd, by =c("condition", "variable"))
+
+prfq <- mutate(prfq, relation = ifelse(prfq$condition == "stem_control",
+                                       "Unrelated prime",
+                                       ifelse(prfq$condition == "suffix_control",
+                                              "Unrelated prime", "Related prime")))
+
+prfq <- mutate(prfq, cond = ifelse(prfq$condition == "stem_control",
+                                       "Stem",
+                                       ifelse(prfq$condition == "stem_priming",
+                                              "Stem", "Suffix")))
+```
+
+##### Plotting
+
+```{r plot3}
+plot3 <- ggplot(data = prfq, mapping = aes(x = relation, y = value, fill = relation))+
+  geom_col()+
+  geom_errorbar(aes(ymin = value - SD, ymax = value + SD), width = .2)+
+  facet_wrap(vars(cond), strip.position = "bottom")+
+  theme_minimal()+
+  scale_x_discrete(labels = NULL,
+                   name = NULL)+
+  scale_y_continuous(name = NULL,
+                     breaks = seq(0, 3, 0.5))+
+  scale_fill_manual(values = wes_palette
+                    (name = "Royal2", n= 2),
+                    name = "Relation")+
+  ggtitle(label = "Word frequency for prime words")+
+  theme(plot.title = element_text(size = "11",
+                                  hjust = "0.5"))
+
+print(plot3)
+```
+```{r save3, message= FALSE, results='hide'}
+ggsave(filename = "primefq.png", plot = plot3)
+```
+
+#### Graph 4 : Stem length
+
+##### Binding and cleaning
+
+```{r binding4}
+prstem_sd <- melt(prstem_sd, id=c("condition"))
+prstem_sd <- prstem_sd %>%
+  rename(SD = value)
+prstem_mean <- melt(prstem_mean, id=c("condition"))
+prstem <- left_join(prstem_mean, prstem_sd, by =c("condition", "variable"))
+
+prstem <- mutate(prstem, relation = ifelse(prstem$condition == "stem_control",
+                                       "Unrelated prime",
+                                       ifelse(prstem$condition == "suffix_control",
+                                              "Unrelated prime", "Related prime")))
+
+prstem <- mutate(prstem, cond = ifelse(prstem$condition == "stem_control",
+                                       "Stem",
+                                       ifelse(prstem$condition == "stem_priming",
+                                              "Stem", "Suffix")))
+```
+
+##### Plotting
+
+```{r plot4}
+plot4 <- ggplot(data = prstem, mapping = aes(x = cond, y = value, fill = cond))+
+  geom_col()+
+  geom_errorbar(aes(ymin = value - SD, ymax = value + SD), width = .2)+
+  facet_wrap(vars(relation), strip.position = "bottom")+
+  theme_minimal()+
+  scale_x_discrete(labels = NULL,
+                   name = NULL)+
+  scale_y_continuous(name = NULL,
+                     breaks = seq(0, 5, 0.5))+
+  scale_fill_manual(values = wes_palette
+                    (name = "GrandBudapest2", n= 2),
+                    name = "Condition")+
+  ggtitle(label = "Stem length across condition")+
+  theme(plot.title = element_text(size = "11",
+                                  hjust = "0.5"))
+
+print(plot4)
+```
+
+```{r save4, message= FALSE, results='hide'}
+ggsave(filename = "stemlength.png", plot = plot4)
+```
+
+
+
+#### Graph 5 : Suffix length
+
+##### Binding and cleaning
+
+```{r binding5}
+prsuffix_sd <- melt(prsuffix_sd, id=c("condition"))
+prsuffix_sd <- prsuffix_sd %>%
+  rename(SD = value)
+prsuffix_mean <- melt(prsuffix_mean, id=c("condition"))
+prsuffix <- left_join(prsuffix_mean, prsuffix_sd, by =c("condition", "variable"))
+
+prsuffix<- mutate(prsuffix, relation = ifelse(prsuffix$condition == "stem_control",
+                                       "Unrelated prime",
+                                       ifelse(prsuffix$condition == "suffix_control",
+                                              "Unrelated prime", "Related prime")))
+
+prsuffix <- mutate(prsuffix, cond = ifelse(prsuffix$condition == "stem_control",
+                                       "Stem",
+                                       ifelse(prsuffix$condition == "stem_priming",
+                                              "Stem", "Suffix")))
+```
+
+##### Plotting
+
+```{r plot5}
+plot5 <- ggplot(data = prsuffix, mapping = aes(x = cond, y = value, fill = cond))+
+  geom_col()+
+  geom_errorbar(aes(ymin = value - SD, ymax = value + SD), width = .2)+
+  facet_wrap(vars(relation), strip.position = "bottom")+
+  theme_minimal()+
+  scale_x_discrete(labels = NULL,
+                   name = NULL)+
+  scale_y_continuous(name = NULL,
+                     breaks = seq(0, 3, 0.5))+
+  scale_fill_manual(values = wes_palette
+                    (name = "GrandBudapest2", n= 2),
+                    name = "Condition")+
+  ggtitle(label = "Suffix length across condition")+
+  theme(plot.title = element_text(size = "11",
+                                  hjust = "0.5"))
+
+print(plot5)
+```
+
+```{r save5, message= FALSE, results='hide'}
+ggsave(filename = "suffixlength.png", plot = plot5)
+```
+
+
+### Experimental data descriptive statistics
+
+#### Graph 1 : RT
+
+##### Binding tables
+
+```{r binding6}
+data_sd <- melt(data_sd, id=c("Condition"))
+data_sd <- data_sd %>%
+  rename(SD = value)
+data_mean <- melt(data_mean, id=c("Condition"))
+dataplot <- left_join(data_mean, data_sd, by =c("Condition", "variable"))
+dataplot <- dataplot %>%
+  rename(rt = value)
+
+dataplot<- mutate(dataplot, relation = ifelse(dataplot$Condition == "stem_control",
+                                       "Unrelated prime",
+                                       ifelse(dataplot$Condition == "suffix_control",
+                                              "Unrelated prime", "Related prime")))
+
+dataplot <- mutate(dataplot, cond = ifelse(dataplot$Condition == "stem_control",
+                                       "Stem",
+                                       ifelse(dataplot$Condition == "stem_priming",
+                                              "Stem", "Suffix")))
+```
+
+##### Plotting
+
+```{r plot6}
+plot6 <- ggplot(data = dataplot, mapping = aes())+
+  geom_pointrange(aes(x=relation,
+                      y=rt, 
+                      ymin=(rt-SD), 
+                      ymax=(rt + SD),
+                      colour = relation))+
+  facet_wrap(vars(cond), strip.position = "bottom")+
+  theme_minimal()+
+  scale_x_discrete(labels = NULL,
+                   name = NULL)+
+  scale_y_continuous(name = "Response time (ms)",
+                     breaks = seq(0, 1000, 50))+
+  scale_colour_manual(values = wes_palette
+                    (name = "Royal2", n= 2),
+                    name = "Relation")+
+  ggtitle(label = "Average response time across condition")+
+  theme(plot.title = element_text(size = "11",
+                                  hjust = "0.5"))
+
+print(plot6)
+```
+
+```{r save6, message= FALSE, results='hide'}
+ggsave(filename = "dataplot.png", plot = plot6)
+```
+
+
+#### Graph 2 : Accuracy
+
+##### Binding tables
+
+```{r binding7}
+acc_sd <- melt(acc_sd, id=c("Condition"))
+acc_sd <- acc_sd %>%
+  rename(SD = value)
+acc_mean <- melt(acc_mean, id=c("Condition"))
+acc <- left_join(acc_mean, acc_sd, by =c("Condition", "variable"))
+acc <- acc %>%
+  rename(Accuracy = value)
+
+acc <- mutate(acc, relation = ifelse(acc$Condition == "stem_control",
+                                       "Unrelated prime",
+                                       ifelse(acc$Condition == "suffix_control",
+                                              "Unrelated prime", "Related prime")))
+
+acc <- mutate(acc, cond = ifelse(acc$Condition == "stem_control",
+                                       "Stem",
+                                       ifelse(acc$Condition == "stem_priming",
+                                              "Stem", "Suffix")))
+
+acc <- mutate(acc, percent = acc$Accuracy*100)
+
+```
+
+##### Plotting
+
+```{r plot7}
+plot7 <- ggplot(data = acc, mapping = aes())+
+  geom_pointrange(aes(x=Condition,
+                      y=percent, 
+                      ymin=(percent - SD), 
+                      ymax=(percent + SD),
+                      colour = Condition))+
+  theme_minimal()+
+  scale_x_discrete(labels = NULL,
+                   name = NULL)+
+  scale_y_continuous(name = "Response accuracy %",
+                     expand = c(0, 0),
+                     limits = c(80, 100),
+                     breaks = seq(80, 100, 5))+
+  scale_colour_manual(values = wes_palette
+                    (name = "Chevalier1", n= 4),
+                    name = "Experiment condition",
+                    labels = c("Stem unrelated prime",
+                               "Stem related prime",
+                               "Suffix unrelated prime",
+                               "Suffix related prime"))+
+  ggtitle(label = "Response accuracy across condition")+
+  theme(plot.title = element_text(size = "11",
+                                  hjust = "0.5"))
+
+print(plot7)
+```
+
+```{r save7, message= FALSE, results='hide'}
+ggsave(filename = "accuracy.png", plot = plot7)
+```
 
 
 <style>
@@ -11,8 +470,19 @@ h1.title {
 }
 
 h3 {
-  font-size: 20px;
+  font-size: 25px;
   color: grey;
 }
 
+h4 {
+  font-size: 20px;
+  color: darkgrey;
+}
+
+p {color: royalblue}
+
+h5 {
+    font-size: 15px;
+    color: darkslategrey;
+}
 </style>

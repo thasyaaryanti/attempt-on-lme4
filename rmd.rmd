@@ -2,19 +2,125 @@
 title: "Website Script"
 ---
 
+```{yml}
+name: "Attempt on lme4"                            
+output_dir: "."
+navbar:
+  title: <a class="navbar-brand" href="file.html">Attempt on lme4</a> 
+  type: inverse
+  left:
+    - text: "Scripts"
+      menu: 
+        - text: "Data analysis"
+          href: lme4.html
+        - text: "ggplot"
+          href: ggplot.html
+        - text: "Website"
+          href: rmd.html
+        - text: "Outliers analysis"
+          href: diagf.html
+    - text: "References"
+      href: references.html 
+  right:
+    - icon: fa-github
+      href: https://github.com/thasyaaryanti/attempt-on-lme4
+output:
+  html_document:
+    theme: lumen
+    highlight: default
+```
 
-
-
+```{css}
 <style>
-
 h1.title {
   font-size: 32px;
   color: slategrey;
 }
 
 h3 {
-  font-size: 20px;
+  font-size: 25px;
   color: grey;
 }
 
+h4 {
+  font-size: 20px;
+  color: darkgrey;
+}
+
+p {color: black}
+
+h5 {
+    font-size: 15px;
+    color: darkslategrey;
+}
+</style>
+```
+
+#### CSS codes for welcome page
+```{css openingpage}
+#<h1>UNSW Psychology Honours PSYC4093 Elective</h1>
+#<h2>Robust Data Tools Project</h2>
+#<h4>Thasya Aryanti z5125631</h4>
+
+
+#<style type="text/css">
+
+#html, body {
+    overflow-y:hidden;
+}
+
+#h1 {
+  font-size: 15px;
+  color: Grey;
+  text-align: center;
+   line-height: 490px;
+    height: 10px;
+}
+#h2 {
+  font-size: 32px;
+  color: SlateGrey;
+  text-align: center;
+   line-height: 500px;
+    height: 20px;
+}
+#h4
+  font-size: 20px;
+  color: Grey;
+  font-style: italic;
+  text-align: center;
+   line-height: 510px;
+    height: 10px;
+}
+
+#a {
+  color: skyblue;
+  line-height: 600px;
+  height: 10px;
+}
+#</style>
+```
+
+
+<style>
+h1.title {
+  font-size: 32px;
+  color: slategrey;
+}
+
+h3 {
+  font-size: 25px;
+  color: grey;
+}
+
+h4 {
+  font-size: 20px;
+  color: darkgrey;
+}
+
+p {color: black}
+
+h5 {
+    font-size: 15px;
+    color: darkslategrey;
+}
 </style>

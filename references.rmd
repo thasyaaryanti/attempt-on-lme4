@@ -4,11 +4,17 @@ title: "References"
 
 ### Data
 
+- Marjanovic, K., & Crepaldi, D. (2020). Morphological priming of inflectional suffixes. https://doi.org/10.31219/osf.io/s8awx
+
+- Marjanovic & Crepaldi (2020) [data and stimuli](https://osf.io/m4vh5/)
+
 - Rastle, K., Davis, M. H., & New, B. (2004). The broth in my brother’s brothel: Morpho-orthographic segmentation in visual word recognition. Psychonomic Bulletin & Review, 11(6), 1090-1098. https://doi.org/10.3758/BF03196742
 
 - Rastle, Davis, & New (2004) [data and stimuli](https://osf.io/hjuws/) 
 
-- 
+- Taft, M., & Li, S. (2019). It’s hard to be talented: What possessional adjectives tell us about lexical representation. The Mental Lexicon, 14(1), 124-151. https://doi.org/10.1075/ml.18011.taf
+
+- Taft & Li (2019) [data and stimuli](https://osf.io/74jbk/)
 
 ### Git Repository
 
@@ -21,6 +27,29 @@ title: "References"
 - Emily C. Zabor's [RMarkdown tutorial](https://www.emilyzabor.com/tutorials/rmarkdown_websites_tutorial.html)
 
 - Monash Bioinformatics Platform's [writing documents with RMarkdown](https://monashbioinformaticsplatform.github.io/2017-11-16-open-science-training/topics/rmarkdown.html)
+
+- [RMarkdown Markdown Basics](https://rmarkdown.rstudio.com/authoring_basics.html)
+
+- Chester Ismay and Patrick C. Kennedy's [Getting Used to R, RStudio, and R Markdown](https://ismayc.github.io/rbasics-book/4-rmarkdown.html)
+
+
+### lme4
+
+- Page Piccinini's R Course on [linear mixed effects model](https://youtu.be/9BDA5b-gtbc)
+
+- Danielle Navarro's [Day 2: Linear models in R](https://djnavarro.github.io/chdss2018/day2/statistics.html)  ( [or click here for slides](https://djnavarro.github.io/chdss2018/day2/statistics-slides.html#36) )
+
+- Winter, B. (2015). A very basic tutorial for performing linear mixed effects analyses: Tutorial 2. Retrieved from https://jontalle.web.engr.illinois.edu/MISC/lme4/bw_LME_tutorial.pdf
+
+
+### ggplot2
+
+- Data visualisation with ggplot2 [cheat sheet](http://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf)
+
+- [Reshaping data](https://www.statmethods.net/management/reshape.html)
+
+- STHDA's ggplot2 axis ticks : [A guide to customize tick marks and labels](http://www.sthda.com/english/wiki/ggplot2-axis-ticks-a-guide-to-customize-tick-marks-and-labels)
+
 
 
 <style>

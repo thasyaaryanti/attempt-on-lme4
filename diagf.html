@@ -11,7 +11,7 @@
 
 
 
-<title>References</title>
+<title>Outliers Script</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -299,8 +299,7 @@ $(document).ready(function () {
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <li class="dropdown-header">Thasya Aryanti z5125631</li>
-<li>
+        <li>
   <a href="https://github.com/thasyaaryanti/attempt-on-lme4">
     <span class="fa fa-github"></span>
      
@@ -315,53 +314,79 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">References</h1>
+<h1 class="title toc-ignore">Outliers Script</h1>
 
 </div>
 
 
-<div id="data" class="section level3">
-<h3>Data</h3>
-<ul>
-<li><p>Marjanovic, K., &amp; Crepaldi, D. (2020). Morphological priming of inflectional suffixes. <a href="https://doi.org/10.31219/osf.io/s8awx" class="uri">https://doi.org/10.31219/osf.io/s8awx</a></p></li>
-<li><p>Marjanovic &amp; Crepaldi (2020) <a href="https://osf.io/m4vh5/">data and stimuli</a></p></li>
-<li><p>Rastle, K., Davis, M. H., &amp; New, B. (2004). The broth in my brother’s brothel: Morpho-orthographic segmentation in visual word recognition. Psychonomic Bulletin &amp; Review, 11(6), 1090-1098. <a href="https://doi.org/10.3758/BF03196742" class="uri">https://doi.org/10.3758/BF03196742</a></p></li>
-<li><p>Rastle, Davis, &amp; New (2004) <a href="https://osf.io/hjuws/">data and stimuli</a></p></li>
-<li><p>Taft, M., &amp; Li, S. (2019). It’s hard to be talented: What possessional adjectives tell us about lexical representation. The Mental Lexicon, 14(1), 124-151. <a href="https://doi.org/10.1075/ml.18011.taf" class="uri">https://doi.org/10.1075/ml.18011.taf</a></p></li>
-<li><p>Taft &amp; Li (2019) <a href="https://osf.io/74jbk/">data and stimuli</a></p></li>
-</ul>
-</div>
-<div id="git-repository" class="section level3">
-<h3>Git Repository</h3>
-<ul>
-<li>Florian Privé’s <a href="https://github.com/privefl/rmarkdown-website-template">RMarkdown Website Template</a></li>
-</ul>
-</div>
-<div id="rmarkdown" class="section level3">
-<h3>RMarkdown</h3>
-<ul>
-<li><p>RMarkdown formatting <a href="https://bookdown.org/yihui/rmarkdown/html-document.html">guide</a></p></li>
-<li><p>Emily C. Zabor’s <a href="https://www.emilyzabor.com/tutorials/rmarkdown_websites_tutorial.html">RMarkdown tutorial</a></p></li>
-<li><p>Monash Bioinformatics Platform’s <a href="https://monashbioinformaticsplatform.github.io/2017-11-16-open-science-training/topics/rmarkdown.html">writing documents with RMarkdown</a></p></li>
-<li><p><a href="https://rmarkdown.rstudio.com/authoring_basics.html">RMarkdown Markdown Basics</a></p></li>
-<li><p>Chester Ismay and Patrick C. Kennedy’s <a href="https://ismayc.github.io/rbasics-book/4-rmarkdown.html">Getting Used to R, RStudio, and R Markdown</a></p></li>
-</ul>
-</div>
-<div id="lme4" class="section level3">
-<h3>lme4</h3>
-<ul>
-<li><p>Page Piccinini’s R Course on <a href="https://youtu.be/9BDA5b-gtbc">linear mixed effects model</a></p></li>
-<li><p>Danielle Navarro’s <a href="https://djnavarro.github.io/chdss2018/day2/statistics.html">Day 2: Linear models in R</a> ( <a href="https://djnavarro.github.io/chdss2018/day2/statistics-slides.html#36">or click here for slides</a> )</p></li>
-<li><p>Winter, B. (2015). A very basic tutorial for performing linear mixed effects analyses: Tutorial 2. Retrieved from <a href="https://jontalle.web.engr.illinois.edu/MISC/lme4/bw_LME_tutorial.pdf" class="uri">https://jontalle.web.engr.illinois.edu/MISC/lme4/bw_LME_tutorial.pdf</a></p></li>
-</ul>
-</div>
-<div id="ggplot2" class="section level3">
-<h3>ggplot2</h3>
-<ul>
-<li><p>Data visualisation with ggplot2 <a href="http://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf">cheat sheet</a></p></li>
-<li><p><a href="https://www.statmethods.net/management/reshape.html">Reshaping data</a></p></li>
-<li><p>STHDA’s ggplot2 axis ticks : <a href="http://www.sthda.com/english/wiki/ggplot2-axis-ticks-a-guide-to-customize-tick-marks-and-labels">A guide to customize tick marks and labels</a></p></li>
-</ul>
+<p>Based on the original diagnostics.R <a href="https://osf.io/xtvmz/">script</a>.</p>
+<pre class="r"><code>diagnostics.f &lt;- function (rt, acc, sbj.id, target, lexicality, filename)
+  
+{
+  temp1 &lt;- aggregate(rt[acc==1 &amp; lexicality==&quot;word&quot;], list(sbj.id[acc==1 &amp; lexicality==&quot;word&quot;]),mean);     
+  temp2 &lt;- aggregate(rt[acc==1 &amp; lexicality==&quot;nonword&quot;], list(sbj.id[acc==1 &amp; lexicality==&quot;nonword&quot;]), mean);     
+  temp3 &lt;- aggregate(acc[lexicality==&quot;word&quot;], list(sbj.id[lexicality==&quot;word&quot;]), mean);      
+  temp4 &lt;- aggregate(acc[lexicality==&quot;nonword&quot;], list(sbj.id[lexicality==&quot;nonword&quot;]), mean);
+  
+  names(temp1) &lt;- c(&quot;sbj.id&quot;, &quot;rt.words&quot;);
+  names(temp2) &lt;- c(&quot;sbj.id&quot;, &quot;rt.nonwords&quot;);
+  names(temp3) &lt;- c(&quot;sbj.id&quot;, &quot;acc.words&quot;);
+  names(temp4) &lt;- c(&quot;sbj.id&quot;, &quot;acc.nonwords&quot;);
+  
+  sbj.diagnostics &lt;- merge(temp1,temp2);
+  sbj.diagnostics &lt;- merge(sbj.diagnostics,temp3);
+  sbj.diagnostics &lt;- merge(sbj.diagnostics,temp4);
+  sbj.diagnostics &lt;&lt;- sbj.diagnostics;
+  
+  td1 &lt;- aggregate(rt[acc==1 &amp; lexicality==&quot;word&quot;], list(target[acc==1 &amp; lexicality==&quot;word&quot;]), mean);
+  td2 &lt;- aggregate(acc[lexicality==&quot;word&quot;], list(target[lexicality==&quot;word&quot;]), mean);
+  
+  names(td1) &lt;- c(&quot;target&quot;,&quot;rt&quot;);
+  names(td2) &lt;- c(&quot;target&quot;,&quot;acc&quot;);
+  
+  target.diagnostics &lt;&lt;- merge(td1, td2);
+  
+  jpeg(paste(as.character(filename),&quot;.jpg&quot;,sep=&quot;&quot;), res=200, height=1654, width=2339);
+  layout(matrix(c(1,2,3,3), nrow=2, byrow=T), heights=c(2,1));   
+  
+  ymin &lt;- min(min(sbj.diagnostics$acc.words),min(sbj.diagnostics$acc.nonwords));
+  ymax &lt;- max(max(sbj.diagnostics$acc.words),max(sbj.diagnostics$acc.nonwords));
+  xmin &lt;- min(min(sbj.diagnostics$rt.words),min(sbj.diagnostics$rt.nonwords));
+  xmax &lt;- max(max(sbj.diagnostics$rt.words),max(sbj.diagnostics$rt.nonwords));
+  
+  sdwords &lt;- vector(mode=&quot;numeric&quot;, length=nrow(sbj.diagnostics));
+  for (i in 1:nrow(sbj.diagnostics)) sdwords[i] &lt;- sd(rt[sbj.id==sbj.diagnostics$sbj.id[i] &amp; acc==1 &amp; lexicality==&quot;word&quot;])/sqrt(length(rt[sbj.id==sbj.diagnostics$sbj.id[i] &amp; acc==1 &amp; lexicality==&quot;word&quot;]));
+  
+  sdnonwords &lt;- vector(mode=&quot;numeric&quot;, length=nrow(sbj.diagnostics));
+  for (i in 1:nrow(sbj.diagnostics)) sdnonwords[i] &lt;- sd(rt[sbj.id==sbj.diagnostics$sbj.id[i] &amp; acc==1 &amp; lexicality==&quot;nonword&quot;])/sqrt(length(rt[sbj.id==sbj.diagnostics$sbj.id[i] &amp; acc==1 &amp; lexicality==&quot;nonword&quot;]));
+  
+  sbj.diagnostics$sd.words &lt;&lt;- sdwords;
+  sbj.diagnostics$sd.nonwords &lt;&lt;- sdnonwords;
+  
+  plot(sbj.diagnostics$rt.words, sbj.diagnostics$acc.words, xlab=&quot;RT (ms)&quot;, ylab=&quot;% correct&quot;, main=&quot;Subjects&quot;, type=&quot;n&quot;, ylim=c(ymin,ymax), xlim=c(xmin,xmax));
+  
+  symbols(sbj.diagnostics$rt.words, sbj.diagnostics$acc.words, fg=&quot;red&quot;, add=T, inches=F, circles=sdwords);
+  symbols(sbj.diagnostics$rt.nonwords, sbj.diagnostics$acc.nonwords, fg=&quot;blue&quot;, add=T, inches=F, circles=sdnonwords);
+  text(sbj.diagnostics$rt.words, sbj.diagnostics$acc.words, as.character(sbj.diagnostics$sbj.id), col=&quot;red&quot;);
+  text(sbj.diagnostics$rt.nonwords, sbj.diagnostics$acc.nonwords, as.character(sbj.diagnostics$sbj.id), col=&quot;blue&quot;);
+  for (i in 1:nrow(sbj.diagnostics)) lines(c(sbj.diagnostics$rt.words[i], sbj.diagnostics$rt.nonwords[i]), c(sbj.diagnostics$acc.words[i], sbj.diagnostics$acc.nonwords[i]), col=grey(.70));
+  
+  abline(v=mean(sbj.diagnostics$rt.words)+(2*sd(sbj.diagnostics$rt.words)), col=&quot;red&quot;, lty=2, lwd=2);
+  abline(v=mean(sbj.diagnostics$rt.nonwords)+(2*sd(sbj.diagnostics$rt.nonwords)), col=&quot;blue&quot;, lty=2, lwd=2);
+  abline(h=mean(sbj.diagnostics$acc.words)-(2*sd(sbj.diagnostics$acc.words)), col=&quot;red&quot;, lty=2, lwd=2);
+  abline(h=mean(sbj.diagnostics$acc.nonwords)-(2*sd(sbj.diagnostics$acc.nonwords)), col=&quot;blue&quot;, lty=2, lwd=2);
+  
+  plot(target.diagnostics$rt, target.diagnostics$acc, pch=19, xlab=&quot;RT (ms)&quot;, ylab=&quot;% correct&quot;, main=&quot;Targets&quot;, type=&quot;n&quot;);
+  text(target.diagnostics$rt, target.diagnostics$acc, as.character(target.diagnostics$target));
+  
+  #hist(rt[acc==1 &amp; lexicality==&quot;word&quot;], xlab=&quot;RT (ms)&quot;, ylab=&quot;Density&quot;, main=&quot;Individual datapoints&quot;, breaks=(max(rt[acc==1 &amp; lexicality==&quot;word&quot;])-min(rt[acc==1 &amp; lexicality==&quot;word&quot;]))/50);
+  hist(rt[acc==1 &amp; lexicality==&quot;word&quot;], xlab=&quot;RT (ms)&quot;, ylab=&quot;Density&quot;, main=&quot;Individual datapoints&quot;, breaks=50);
+  
+  dev.off();
+  
+  par(mfrow=c(1,1));
+  
+}</code></pre>
 <style>
 
 h1.title {
@@ -374,8 +399,12 @@ h3 {
   color: grey;
 }
 
+h4 {
+  font-size: 15px;
+  color: darkgrey;
+}
+
 </style>
-</div>
 
 
 

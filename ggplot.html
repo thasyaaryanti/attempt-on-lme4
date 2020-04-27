@@ -281,13 +281,16 @@ $(document).ready(function () {
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="lme4.html">lme4</a>
+      <a href="lme4.html">Data analysis</a>
     </li>
     <li>
       <a href="ggplot.html">ggplot</a>
     </li>
     <li>
       <a href="rmd.html">Website</a>
+    </li>
+    <li>
+      <a href="diagf.html">Outliers analysis</a>
     </li>
   </ul>
 </li>
@@ -296,7 +299,8 @@ $(document).ready(function () {
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <li>
+        <li class="dropdown-header">Thasya Aryanti z5125631</li>
+<li>
   <a href="https://github.com/thasyaaryanti/attempt-on-lme4">
     <span class="fa fa-github"></span>
      
@@ -316,6 +320,340 @@ $(document).ready(function () {
 </div>
 
 
+<pre class="r"><code>library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(wesanderson)
+library(reshape2)</code></pre>
+<div id="stimuli-descriptive-statistics" class="section level3">
+<h3>Stimuli descriptive statistics</h3>
+<div id="graph-1-target-words" class="section level4">
+<h4>Graph 1 : Target Words</h4>
+<div id="binding-tables" class="section level5">
+<h5>Binding tables</h5>
+<pre class="r"><code>target_sd &lt;- left_join(tstem_sd, tsuffix_sd, by = c(&#39;condition&#39;))
+target_sd &lt;- left_join(target_sd, tfq_sd, by = c(&#39;condition&#39;))
+target_sd &lt;- melt(target_sd, id=c(&quot;condition&quot;))
+
+target_word &lt;- left_join(tstem_mean, tsuffix_mean, by = c(&#39;condition&#39;))
+target_word &lt;- left_join(target_word, tfq_mean, by = c(&#39;condition&#39;))
+target_word &lt;- melt(target_word, id=c(&quot;condition&quot;))
+
+target_word &lt;- left_join(target_word, target_sd, by = c(&#39;condition&#39;, &#39;variable&#39;))</code></pre>
+</div>
+<div id="cleaning-up" class="section level5">
+<h5>Cleaning up</h5>
+<p>Since target words were the same regardless of the condition, I renamed one condition and removed the others.</p>
+<pre class="r"><code>target_word&lt;- target_word %&gt;%
+  filter(condition == &quot;stem_control&quot;)
+
+target_word &lt;- target_word %&gt;%
+  rename(SD = value.y)
+target_word &lt;- target_word %&gt;%
+  rename(value = value.x)
+
+target_word[1] = &#39;target words&#39;</code></pre>
+</div>
+<div id="plotting" class="section level5">
+<h5>Plotting</h5>
+<pre class="r"><code>plot1 &lt;- ggplot(data = target_word, mapping = aes(x = variable, y = value, fill = variable)) +
+  geom_col()+
+  geom_errorbar(aes(ymin = value - SD, ymax = value + SD), width = .2) + 
+  theme_minimal()+
+  scale_x_discrete(labels = c(&quot;Stem length&quot;,
+                              &quot;Suffix length&quot;,
+                              &quot;Target frequency&quot;),
+                         name = NULL) +
+  scale_y_continuous(name = NULL,
+                     breaks = seq(0, 5, 0.5)) +
+  scale_fill_manual(values = wes_palette(&quot;Moonrise3&quot;, n= 3),
+                    guide = &quot;none&quot;)+
+  ggtitle(label = &quot;Average attributes for target words&quot;) +
+  theme(plot.title = element_text(size = &quot;11&quot;,
+                                  hjust = &quot;0.5&quot;))
+
+print(plot1)</code></pre>
+<p><img src="ggplot_files/figure-html/ggplot1-1.png" width="672" /></p>
+<pre class="r"><code>ggsave(filename = &quot;targetwords.png&quot;, plot = plot1)</code></pre>
+</div>
+</div>
+<div id="graph-2-orthographic-overlap" class="section level4">
+<h4>Graph 2 : Orthographic overlap</h4>
+<div id="binding-and-cleaning" class="section level5">
+<h5>Binding and cleaning</h5>
+<pre class="r"><code>orth_sd &lt;- melt(orth_sd, id=c(&quot;condition&quot;))
+orth_sd &lt;- orth_sd %&gt;%
+  rename(SD = value)
+orth_mean &lt;- melt(orth_mean, id=c(&quot;condition&quot;))
+orth &lt;- left_join(orth_mean, orth_sd, by =c(&quot;condition&quot;, &quot;variable&quot;))
+
+orth &lt;- mutate(orth, relation = ifelse(orth$condition == &quot;stem_control&quot;,
+                                       &quot;Unrelated prime&quot;,
+                                       ifelse(orth$condition == &quot;suffix_control&quot;,
+                                              &quot;Unrelated prime&quot;, &quot;Related prime&quot;)))
+
+orth &lt;- mutate(orth, cond = ifelse(orth$condition == &quot;stem_control&quot;,
+                                       &quot;stem&quot;,
+                                       ifelse(orth$condition == &quot;stem_priming&quot;,
+                                              &quot;stem&quot;, &quot;suffix&quot;)))</code></pre>
+</div>
+<div id="plotting-1" class="section level5">
+<h5>Plotting</h5>
+<pre class="r"><code>plot2 &lt;- ggplot(data = orth, mapping = aes(x = cond, y = value, fill = cond))+
+  geom_col()+
+  geom_errorbar(aes(ymin = value - SD, ymax = value + SD), width = .2)+
+  facet_wrap(vars(relation), strip.position = &quot;bottom&quot;)+
+  theme_minimal()+
+  scale_x_discrete(labels = NULL,
+                   name = NULL)+
+  scale_y_continuous(name = NULL)+
+  scale_fill_manual(values = wes_palette
+                    (name = &quot;GrandBudapest2&quot;, n= 2),
+                    name = &quot;Condition&quot;,
+                    labels = c(&quot;Stem&quot;,
+                               &quot;Suffix&quot;))+
+  ggtitle(label = &quot;Orthographic overlap between target and prime words&quot;)+
+  theme(plot.title = element_text(size = &quot;11&quot;,
+                                  hjust = &quot;0.5&quot;))
+
+print(plot2)</code></pre>
+<p><img src="ggplot_files/figure-html/plot2-1.png" width="672" /></p>
+<pre class="r"><code>ggsave(filename = &quot;orthoverlap.png&quot;, plot = plot2)</code></pre>
+</div>
+</div>
+<div id="graph-3-prime-frequency" class="section level4">
+<h4>Graph 3 : Prime frequency</h4>
+<div id="binding-and-cleaning-1" class="section level5">
+<h5>Binding and cleaning</h5>
+<pre class="r"><code>prfq_sd &lt;- melt(prfq_sd, id=c(&quot;condition&quot;))
+prfq_sd &lt;- prfq_sd %&gt;%
+  rename(SD = value)
+prfq_mean &lt;- melt(prfq_mean, id=c(&quot;condition&quot;))
+prfq &lt;- left_join(prfq_mean, prfq_sd, by =c(&quot;condition&quot;, &quot;variable&quot;))
+
+prfq &lt;- mutate(prfq, relation = ifelse(prfq$condition == &quot;stem_control&quot;,
+                                       &quot;Unrelated prime&quot;,
+                                       ifelse(prfq$condition == &quot;suffix_control&quot;,
+                                              &quot;Unrelated prime&quot;, &quot;Related prime&quot;)))
+
+prfq &lt;- mutate(prfq, cond = ifelse(prfq$condition == &quot;stem_control&quot;,
+                                       &quot;Stem&quot;,
+                                       ifelse(prfq$condition == &quot;stem_priming&quot;,
+                                              &quot;Stem&quot;, &quot;Suffix&quot;)))</code></pre>
+</div>
+<div id="plotting-2" class="section level5">
+<h5>Plotting</h5>
+<pre class="r"><code>plot3 &lt;- ggplot(data = prfq, mapping = aes(x = relation, y = value, fill = relation))+
+  geom_col()+
+  geom_errorbar(aes(ymin = value - SD, ymax = value + SD), width = .2)+
+  facet_wrap(vars(cond), strip.position = &quot;bottom&quot;)+
+  theme_minimal()+
+  scale_x_discrete(labels = NULL,
+                   name = NULL)+
+  scale_y_continuous(name = NULL,
+                     breaks = seq(0, 3, 0.5))+
+  scale_fill_manual(values = wes_palette
+                    (name = &quot;Royal2&quot;, n= 2),
+                    name = &quot;Relation&quot;)+
+  ggtitle(label = &quot;Word frequency for prime words&quot;)+
+  theme(plot.title = element_text(size = &quot;11&quot;,
+                                  hjust = &quot;0.5&quot;))
+
+print(plot3)</code></pre>
+<p><img src="ggplot_files/figure-html/plot3-1.png" width="672" /></p>
+<pre class="r"><code>ggsave(filename = &quot;primefq.png&quot;, plot = plot3)</code></pre>
+</div>
+</div>
+<div id="graph-4-stem-length" class="section level4">
+<h4>Graph 4 : Stem length</h4>
+<div id="binding-and-cleaning-2" class="section level5">
+<h5>Binding and cleaning</h5>
+<pre class="r"><code>prstem_sd &lt;- melt(prstem_sd, id=c(&quot;condition&quot;))
+prstem_sd &lt;- prstem_sd %&gt;%
+  rename(SD = value)
+prstem_mean &lt;- melt(prstem_mean, id=c(&quot;condition&quot;))
+prstem &lt;- left_join(prstem_mean, prstem_sd, by =c(&quot;condition&quot;, &quot;variable&quot;))
+
+prstem &lt;- mutate(prstem, relation = ifelse(prstem$condition == &quot;stem_control&quot;,
+                                       &quot;Unrelated prime&quot;,
+                                       ifelse(prstem$condition == &quot;suffix_control&quot;,
+                                              &quot;Unrelated prime&quot;, &quot;Related prime&quot;)))
+
+prstem &lt;- mutate(prstem, cond = ifelse(prstem$condition == &quot;stem_control&quot;,
+                                       &quot;Stem&quot;,
+                                       ifelse(prstem$condition == &quot;stem_priming&quot;,
+                                              &quot;Stem&quot;, &quot;Suffix&quot;)))</code></pre>
+</div>
+<div id="plotting-3" class="section level5">
+<h5>Plotting</h5>
+<pre class="r"><code>plot4 &lt;- ggplot(data = prstem, mapping = aes(x = cond, y = value, fill = cond))+
+  geom_col()+
+  geom_errorbar(aes(ymin = value - SD, ymax = value + SD), width = .2)+
+  facet_wrap(vars(relation), strip.position = &quot;bottom&quot;)+
+  theme_minimal()+
+  scale_x_discrete(labels = NULL,
+                   name = NULL)+
+  scale_y_continuous(name = NULL,
+                     breaks = seq(0, 5, 0.5))+
+  scale_fill_manual(values = wes_palette
+                    (name = &quot;GrandBudapest2&quot;, n= 2),
+                    name = &quot;Condition&quot;)+
+  ggtitle(label = &quot;Stem length across condition&quot;)+
+  theme(plot.title = element_text(size = &quot;11&quot;,
+                                  hjust = &quot;0.5&quot;))
+
+print(plot4)</code></pre>
+<p><img src="ggplot_files/figure-html/plot4-1.png" width="672" /></p>
+<pre class="r"><code>ggsave(filename = &quot;stemlength.png&quot;, plot = plot4)</code></pre>
+</div>
+</div>
+<div id="graph-5-suffix-length" class="section level4">
+<h4>Graph 5 : Suffix length</h4>
+<div id="binding-and-cleaning-3" class="section level5">
+<h5>Binding and cleaning</h5>
+<pre class="r"><code>prsuffix_sd &lt;- melt(prsuffix_sd, id=c(&quot;condition&quot;))
+prsuffix_sd &lt;- prsuffix_sd %&gt;%
+  rename(SD = value)
+prsuffix_mean &lt;- melt(prsuffix_mean, id=c(&quot;condition&quot;))
+prsuffix &lt;- left_join(prsuffix_mean, prsuffix_sd, by =c(&quot;condition&quot;, &quot;variable&quot;))
+
+prsuffix&lt;- mutate(prsuffix, relation = ifelse(prsuffix$condition == &quot;stem_control&quot;,
+                                       &quot;Unrelated prime&quot;,
+                                       ifelse(prsuffix$condition == &quot;suffix_control&quot;,
+                                              &quot;Unrelated prime&quot;, &quot;Related prime&quot;)))
+
+prsuffix &lt;- mutate(prsuffix, cond = ifelse(prsuffix$condition == &quot;stem_control&quot;,
+                                       &quot;Stem&quot;,
+                                       ifelse(prsuffix$condition == &quot;stem_priming&quot;,
+                                              &quot;Stem&quot;, &quot;Suffix&quot;)))</code></pre>
+</div>
+<div id="plotting-4" class="section level5">
+<h5>Plotting</h5>
+<pre class="r"><code>plot5 &lt;- ggplot(data = prsuffix, mapping = aes(x = cond, y = value, fill = cond))+
+  geom_col()+
+  geom_errorbar(aes(ymin = value - SD, ymax = value + SD), width = .2)+
+  facet_wrap(vars(relation), strip.position = &quot;bottom&quot;)+
+  theme_minimal()+
+  scale_x_discrete(labels = NULL,
+                   name = NULL)+
+  scale_y_continuous(name = NULL,
+                     breaks = seq(0, 3, 0.5))+
+  scale_fill_manual(values = wes_palette
+                    (name = &quot;GrandBudapest2&quot;, n= 2),
+                    name = &quot;Condition&quot;)+
+  ggtitle(label = &quot;Suffix length across condition&quot;)+
+  theme(plot.title = element_text(size = &quot;11&quot;,
+                                  hjust = &quot;0.5&quot;))
+
+print(plot5)</code></pre>
+<p><img src="ggplot_files/figure-html/plot5-1.png" width="672" /></p>
+<pre class="r"><code>ggsave(filename = &quot;suffixlength.png&quot;, plot = plot5)</code></pre>
+</div>
+</div>
+</div>
+<div id="experimental-data-descriptive-statistics" class="section level3">
+<h3>Experimental data descriptive statistics</h3>
+<div id="graph-1-rt" class="section level4">
+<h4>Graph 1 : RT</h4>
+<div id="binding-tables-1" class="section level5">
+<h5>Binding tables</h5>
+<pre class="r"><code>data_sd &lt;- melt(data_sd, id=c(&quot;Condition&quot;))
+data_sd &lt;- data_sd %&gt;%
+  rename(SD = value)
+data_mean &lt;- melt(data_mean, id=c(&quot;Condition&quot;))
+dataplot &lt;- left_join(data_mean, data_sd, by =c(&quot;Condition&quot;, &quot;variable&quot;))
+dataplot &lt;- dataplot %&gt;%
+  rename(rt = value)
+
+dataplot&lt;- mutate(dataplot, relation = ifelse(dataplot$Condition == &quot;stem_control&quot;,
+                                       &quot;Unrelated prime&quot;,
+                                       ifelse(dataplot$Condition == &quot;suffix_control&quot;,
+                                              &quot;Unrelated prime&quot;, &quot;Related prime&quot;)))
+
+dataplot &lt;- mutate(dataplot, cond = ifelse(dataplot$Condition == &quot;stem_control&quot;,
+                                       &quot;Stem&quot;,
+                                       ifelse(dataplot$Condition == &quot;stem_priming&quot;,
+                                              &quot;Stem&quot;, &quot;Suffix&quot;)))</code></pre>
+</div>
+<div id="plotting-5" class="section level5">
+<h5>Plotting</h5>
+<pre class="r"><code>plot6 &lt;- ggplot(data = dataplot, mapping = aes())+
+  geom_pointrange(aes(x=relation,
+                      y=rt, 
+                      ymin=(rt-SD), 
+                      ymax=(rt + SD),
+                      colour = relation))+
+  facet_wrap(vars(cond), strip.position = &quot;bottom&quot;)+
+  theme_minimal()+
+  scale_x_discrete(labels = NULL,
+                   name = NULL)+
+  scale_y_continuous(name = &quot;Response time (ms)&quot;,
+                     breaks = seq(0, 1000, 50))+
+  scale_colour_manual(values = wes_palette
+                    (name = &quot;Royal2&quot;, n= 2),
+                    name = &quot;Relation&quot;)+
+  ggtitle(label = &quot;Average response time across condition&quot;)+
+  theme(plot.title = element_text(size = &quot;11&quot;,
+                                  hjust = &quot;0.5&quot;))
+
+print(plot6)</code></pre>
+<p><img src="ggplot_files/figure-html/plot6-1.png" width="672" /></p>
+<pre class="r"><code>ggsave(filename = &quot;dataplot.png&quot;, plot = plot6)</code></pre>
+</div>
+</div>
+<div id="graph-2-accuracy" class="section level4">
+<h4>Graph 2 : Accuracy</h4>
+<div id="binding-tables-2" class="section level5">
+<h5>Binding tables</h5>
+<pre class="r"><code>acc_sd &lt;- melt(acc_sd, id=c(&quot;Condition&quot;))
+acc_sd &lt;- acc_sd %&gt;%
+  rename(SD = value)
+acc_mean &lt;- melt(acc_mean, id=c(&quot;Condition&quot;))
+acc &lt;- left_join(acc_mean, acc_sd, by =c(&quot;Condition&quot;, &quot;variable&quot;))
+acc &lt;- acc %&gt;%
+  rename(Accuracy = value)
+
+acc &lt;- mutate(acc, relation = ifelse(acc$Condition == &quot;stem_control&quot;,
+                                       &quot;Unrelated prime&quot;,
+                                       ifelse(acc$Condition == &quot;suffix_control&quot;,
+                                              &quot;Unrelated prime&quot;, &quot;Related prime&quot;)))
+
+acc &lt;- mutate(acc, cond = ifelse(acc$Condition == &quot;stem_control&quot;,
+                                       &quot;Stem&quot;,
+                                       ifelse(acc$Condition == &quot;stem_priming&quot;,
+                                              &quot;Stem&quot;, &quot;Suffix&quot;)))
+
+acc &lt;- mutate(acc, percent = acc$Accuracy*100)</code></pre>
+</div>
+<div id="plotting-6" class="section level5">
+<h5>Plotting</h5>
+<pre class="r"><code>plot7 &lt;- ggplot(data = acc, mapping = aes())+
+  geom_pointrange(aes(x=Condition,
+                      y=percent, 
+                      ymin=(percent - SD), 
+                      ymax=(percent + SD),
+                      colour = Condition))+
+  theme_minimal()+
+  scale_x_discrete(labels = NULL,
+                   name = NULL)+
+  scale_y_continuous(name = &quot;Response accuracy %&quot;,
+                     expand = c(0, 0),
+                     limits = c(80, 100),
+                     breaks = seq(80, 100, 5))+
+  scale_colour_manual(values = wes_palette
+                    (name = &quot;Chevalier1&quot;, n= 4),
+                    name = &quot;Experiment condition&quot;,
+                    labels = c(&quot;Stem unrelated prime&quot;,
+                               &quot;Stem related prime&quot;,
+                               &quot;Suffix unrelated prime&quot;,
+                               &quot;Suffix related prime&quot;))+
+  ggtitle(label = &quot;Response accuracy across condition&quot;)+
+  theme(plot.title = element_text(size = &quot;11&quot;,
+                                  hjust = &quot;0.5&quot;))
+
+print(plot7)</code></pre>
+<p><img src="ggplot_files/figure-html/plot7-1.png" width="672" /></p>
+<pre class="r"><code>ggsave(filename = &quot;accuracy.png&quot;, plot = plot7)</code></pre>
 <style>
 
 h1.title {
@@ -324,11 +662,25 @@ h1.title {
 }
 
 h3 {
-  font-size: 20px;
+  font-size: 25px;
   color: grey;
 }
 
+h4 {
+  font-size: 20px;
+  color: darkgrey;
+}
+
+p {color: royalblue}
+
+h5 {
+    font-size: 15px;
+    color: darkslategrey;
+}
 </style>
+</div>
+</div>
+</div>
 
 
 

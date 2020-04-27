@@ -1,9 +1,45 @@
 ---
 title: "Attempt on lme4"
 ---
+`lme4` is a package in R that provides function for running mixed models, whether it is linear, generalised linear, or nonlinear. A model expresses the relationship in a data in terms of a function and it is “mixed” because it involves both **fixed** and **random** effects.
 
+The idea of mixed models may be understood better when we compare it to the variables present in an ANOVA. Similar to ANOVA, mixed model also involves a dependent variable. Instead of independent variables and error variable, the counterpart in a mixed model would be the fixed effect and random effect respectively.
 
+Being very unfamiliar with mixed models and a first-timer with the package `lme4`, the reason why I decided to do this is because my current honours research involves doing a psycholinguistic experiment. To my knowledge, most data on psycholinguistics, specifically data from DMDX, are now analysed with R. Even though my supervisor advised me that I could go ahead and analyse my data with the traditional ANCOVA analysis, I thought I could give `lme4` a try for this project.
 
+<br>
+
+## Original proposal
+
+In my project proposal, I mentioned that because finding a recent study on psycholinguistics that did not use `lme4` or related packages was difficult, I decided to analyse data from old papers, specifically one by Rastle, Davis & New (2004) that researched on the underlying mechanisms of processing polymorphemic words. 
+
+Fortunately, I was able to find the [experimental data](https://osf.io/hjuws/), which at first glance looks complete, on Open Science Framework (OSF). I downloaded the files and imported to a new R project.
+
+After hours of reshaping the experimental data, I struggled when I needed to fit the data into a linear mixed model with `lme4`. I realised that the data uploaded on OSF did not include the stimuli properties which were required for the analysis. Thus, because the data was not suitable, I had to find a new data to work with.
+
+<br>
+
+## Current project
+
+One thing I did not realise was that it requires a lot of time, more than I expected, to find a suitable data set that does not analyse its data with `lme4`. Possibly because I was insisting on using psycholinguistic data, and one that I could understand what the research was about. In the end, I decided to use a data that previously analysed with R and try out the codes myself with the data set.
+
+The current [data set](https://osf.io/xtvmz/) I’ve used for this project comes from a study on priming effects of inflectional suffixes by Marjanovič & Crepaldi (2020). In this two-part experiment, participants also completed a masked lexical decision task in Slovenian. For the purpose of this project I will only be analysing the Experiment 1, where there are two factors (relation and condition), creating 4 different conditions — suffix-priming, suffix-control, stem-priming and stem-control. In the relation factor, primes either share the same stem or suffix with the target (i.e., priming), or not (i.e., control). As with condition factor, primes either shared the same stem (i.e., _**mam**ov-**MAM**AM_) or the same suffix (i.e., _okn**am**-MAM**AM**_). It has been well-established that morphologically related stems do facilitate the response of the target, as it was reported in the study by Rastle, Davis & New (2004), but the aim of this study was to see whether suffixes have the same or even a better facilitation effect.
+
+The analysis of the data involved analysing the inverse-transformed response time (RT) (i.e., -1000/RT), modelled as a function of the two factors and their interaction. The random effects entered to the `lme4` model were the subjects and target words. Along with that, the covariate stem frequency was also included in the model as a fixed effect.
+
+<br>
+
+## Current analysis
+
+The analysis was then done through the package `lme4` for this project. The full data analysis script of my `lme4` attempt can be accessed [here](lme4.html). 
+
+<br>
+
+## Results comparison
+
+### Experiment items descriptive statistics
+
+The descriptive statistics in the paper were presented in a table form.
 
 <style>
 
@@ -12,9 +48,25 @@ h1.title {
   color: slategrey;
 }
 
+h2 {
+  font-size: 28px;
+  color: dimgrey;
+}
+
 h3 {
-  font-size: 20px;
+  font-size: 25px;
   color: grey;
 }
 
+h4 {
+  font-size: 20px;
+  color: darkgrey;
+}
+
+p {color: black}
+
+h5 {
+    font-size: 15px;
+    color: darkslategrey;
+}
 </style>
