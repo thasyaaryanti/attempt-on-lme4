@@ -299,7 +299,9 @@ $(document).ready(function () {
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <li class="dropdown-header">Thasya Aryanti z5125631</li>
+        <li>
+  <a href="file.html">Thasya Aryanti z5125631</a>
+</li>
 <li>
   <a href="https://github.com/thasyaaryanti/attempt-on-lme4">
     <span class="fa fa-github"></span>
@@ -365,7 +367,9 @@ target_word[1] = &#39;target words&#39;</code></pre>
                               &quot;Target frequency&quot;),
                          name = NULL) +
   scale_y_continuous(name = NULL,
-                     breaks = seq(0, 5, 0.5)) +
+                    expand = c(0, 0),
+                    limits = c(0, 6),
+                    breaks = seq(0, 6, 0.5)) +
   scale_fill_manual(values = wes_palette(&quot;Moonrise3&quot;, n= 3),
                     guide = &quot;none&quot;)+
   ggtitle(label = &quot;Average attributes for target words&quot;) +
@@ -494,7 +498,9 @@ prstem &lt;- mutate(prstem, cond = ifelse(prstem$condition == &quot;stem_control
   scale_x_discrete(labels = NULL,
                    name = NULL)+
   scale_y_continuous(name = NULL,
-                     breaks = seq(0, 5, 0.5))+
+                    expand = c(0, 0),
+                    limits = c(0, 6),
+                    breaks = seq(0, 6, 0.5))+
   scale_fill_manual(values = wes_palette
                     (name = &quot;GrandBudapest2&quot;, n= 2),
                     name = &quot;Condition&quot;)+
@@ -537,7 +543,9 @@ prsuffix &lt;- mutate(prsuffix, cond = ifelse(prsuffix$condition == &quot;stem_c
   scale_x_discrete(labels = NULL,
                    name = NULL)+
   scale_y_continuous(name = NULL,
-                     breaks = seq(0, 3, 0.5))+
+                    expand = c(0, 0),
+                    limits = c(0, 6),
+                    breaks = seq(0, 6, 0.5))+
   scale_fill_manual(values = wes_palette
                     (name = &quot;GrandBudapest2&quot;, n= 2),
                     name = &quot;Condition&quot;)+

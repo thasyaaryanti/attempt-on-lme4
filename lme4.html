@@ -300,6 +300,9 @@ $(document).ready(function () {
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
+  <a href="file.html">Thasya Aryanti z5125631</a>
+</li>
+<li>
   <a href="https://github.com/thasyaaryanti/attempt-on-lme4">
     <span class="fa fa-github"></span>
      
@@ -354,7 +357,8 @@ glimpse(stimuli)</code></pre>
 <h3>Analysis of experimental items</h3>
 <div id="mutating-and-formatting-variables" class="section level4">
 <h4>Mutating and formatting variables</h4>
-<pre class="r"><code>stimuli &lt;- mutate(stimuli,
+<pre class="r"><code>#create new condition variable
+stimuli &lt;- mutate(stimuli,
   condition =
     ifelse(stimuli$primingMorpheme == &#39;suffix&#39; 
            &amp; stimuli$relatedness == &#39;rel&#39;, &quot;suffix_priming&quot;,
@@ -365,8 +369,11 @@ glimpse(stimuli)</code></pre>
                          ifelse(stimuli$primingMorpheme == &#39;stem&#39;
                                 &amp; stimuli$relatedness == &#39;cntr&#39;, &quot;stem_control&quot;,
                                 &quot;NULL&quot;)))))
+#convert new variable as factor and numerical
 stimuli$condition &lt;- factor(stimuli$condition);
 stimuli$primeFreq &lt;- as.double(stimuli$primeFreq);
+
+#new variable on stem and target length
 stimuli$primeStemLength &lt;- stimuli$PrimeLength-stimuli$primeSuffixLength;
 stimuli$targetStemLength &lt;- stimuli$targetLength-stimuli$targetSuffixLength</code></pre>
 <pre class="r"><code>glimpse(stimuli)</code></pre>
@@ -390,7 +397,8 @@ stimuli$targetStemLength &lt;- stimuli$targetLength-stimuli$targetSuffixLength</
 </div>
 <div id="calculating-attributes-of-stimuli" class="section level4">
 <h4>Calculating attributes of stimuli</h4>
-<pre class="r"><code>aggregate(targetStemLength ~ condition, FUN=mean, data=stimuli);</code></pre>
+<pre class="r"><code>#target stem length attributes
+aggregate(targetStemLength ~ condition, FUN=mean, data=stimuli);</code></pre>
 <pre><code>##        condition targetStemLength
 ## 1   stem_control            4.325
 ## 2   stem_priming            4.325
@@ -402,7 +410,8 @@ stimuli$targetStemLength &lt;- stimuli$targetLength-stimuli$targetSuffixLength</
 ## 2   stem_priming         1.118321
 ## 3 suffix_control         1.118321
 ## 4 suffix_priming         1.118321</code></pre>
-<pre class="r"><code>aggregate(primeStemLength ~ condition, FUN=mean, data=stimuli);</code></pre>
+<pre class="r"><code>#prime stem length attributes
+aggregate(primeStemLength ~ condition, FUN=mean, data=stimuli);</code></pre>
 <pre><code>##        condition primeStemLength
 ## 1   stem_control           4.325
 ## 2   stem_priming           4.325
@@ -414,7 +423,8 @@ stimuli$targetStemLength &lt;- stimuli$targetLength-stimuli$targetSuffixLength</
 ## 2   stem_priming        1.118321
 ## 3 suffix_control        1.098951
 ## 4 suffix_priming        1.118321</code></pre>
-<pre class="r"><code>aggregate(targetSuffixLength ~ condition, FUN=mean, data=stimuli);</code></pre>
+<pre class="r"><code>#target suffix length attributes
+aggregate(targetSuffixLength ~ condition, FUN=mean, data=stimuli);</code></pre>
 <pre><code>##        condition targetSuffixLength
 ## 1   stem_control                  2
 ## 2   stem_priming                  2
@@ -426,7 +436,8 @@ stimuli$targetStemLength &lt;- stimuli$targetLength-stimuli$targetSuffixLength</
 ## 2   stem_priming                  0
 ## 3 suffix_control                  0
 ## 4 suffix_priming                  0</code></pre>
-<pre class="r"><code>aggregate(primeSuffixLength ~ condition, FUN=mean, data=stimuli);</code></pre>
+<pre class="r"><code>#prime suffix length attributes
+aggregate(primeSuffixLength ~ condition, FUN=mean, data=stimuli);</code></pre>
 <pre><code>##        condition primeSuffixLength
 ## 1   stem_control                 2
 ## 2   stem_priming                 2
@@ -438,7 +449,8 @@ stimuli$targetStemLength &lt;- stimuli$targetLength-stimuli$targetSuffixLength</
 ## 2   stem_priming                 0
 ## 3 suffix_control                 0
 ## 4 suffix_priming                 0</code></pre>
-<pre class="r"><code>aggregate(log10(targetFreq) ~ condition, FUN=mean, data=stimuli);</code></pre>
+<pre class="r"><code>#target freq
+aggregate(log10(targetFreq) ~ condition, FUN=mean, data=stimuli);</code></pre>
 <pre><code>##        condition log10(targetFreq)
 ## 1   stem_control          1.457591
 ## 2   stem_priming          1.457591
@@ -450,7 +462,8 @@ stimuli$targetStemLength &lt;- stimuli$targetLength-stimuli$targetSuffixLength</
 ## 2   stem_priming          0.648854
 ## 3 suffix_control          0.648854
 ## 4 suffix_priming          0.648854</code></pre>
-<pre class="r"><code>aggregate(log10(primeFreq) ~ condition, FUN=mean, data=stimuli);</code></pre>
+<pre class="r"><code>#prime freq
+aggregate(log10(primeFreq) ~ condition, FUN=mean, data=stimuli);</code></pre>
 <pre><code>##        condition log10(primeFreq)
 ## 1   stem_control        0.9695187
 ## 2   stem_priming        1.4575912
@@ -462,7 +475,8 @@ stimuli$targetStemLength &lt;- stimuli$targetLength-stimuli$targetSuffixLength</
 ## 2   stem_priming        0.6488540
 ## 3 suffix_control        0.8059078
 ## 4 suffix_priming        0.8059078</code></pre>
-<pre class="r"><code>aggregate(orthOverlap ~ condition, FUN=mean, data=stimuli);</code></pre>
+<pre class="r"><code>#orthography overlap
+aggregate(orthOverlap ~ condition, FUN=mean, data=stimuli);</code></pre>
 <pre><code>##        condition orthOverlap
 ## 1   stem_control     0.26825
 ## 2   stem_priming     0.62500
@@ -480,7 +494,8 @@ stimuli$targetStemLength &lt;- stimuli$targetLength-stimuli$targetSuffixLength</
 <h3>Analysis of data</h3>
 <div id="mutating-and-formatting-variables-1" class="section level4">
 <h4>Mutating and formatting variables</h4>
-<pre class="r"><code>expdata &lt;- mutate(expdata,
+<pre class="r"><code>#create new variable for target
+expdata &lt;- mutate(expdata,
   target =
     ifelse(expdata$TrialID&gt;199 &amp; expdata$TrialID&lt;299, 
            (expdata$TrialID&gt;199 &amp; expdata$TrialID&lt;299)-100,
@@ -490,9 +505,11 @@ stimuli$targetStemLength &lt;- stimuli$targetLength-stimuli$targetSuffixLength</
                          (expdata$TrialID&gt;399 &amp; expdata$TrialID&lt;499)-300,
                          expdata$TrialID-100))))
 
+#convert variable to factor
 expdata$target &lt;- factor(expdata$target);
 expdata$SubjectID &lt;- factor(expdata$SubjectID)
 
+#create new variable for condition
 expdata &lt;- mutate(expdata,
   cond =
     ifelse(expdata$Condition == &#39;suffix_priming&#39;, 
@@ -505,6 +522,7 @@ expdata &lt;- mutate(expdata,
                                 &#39;stem&#39;,
                                 &#39;stem&#39;)))))
 
+#create new variable for relation
 expdata &lt;- mutate(expdata,
   relation =
     ifelse(expdata$Condition == &#39;suffix_priming&#39;, 
@@ -517,16 +535,18 @@ expdata &lt;- mutate(expdata,
                                 &#39;control&#39;,
                                 &#39;prime&#39;)))))
 
-# convert the new variables to factors
+# convert new variables to factors
 expdata$relation &lt;- factor(expdata$relation); 
 expdata$cond &lt;- factor(expdata$cond)
 
+#create word conditon variable
 expdata &lt;- mutate(expdata,
   category =
     ifelse(expdata$Condition == &#39;nonword&#39;, 
            &#39;nonword&#39;,
            &#39;word&#39;))
 
+#convert as factor
 expdata$category = factor(expdata$category)</code></pre>
 <pre class="r"><code>glimpse(expdata)</code></pre>
 <pre><code>## Rows: 4,880
@@ -550,8 +570,8 @@ expdata$category = factor(expdata$category)</code></pre>
 <pre class="r"><code>source(&quot;diagf.R&quot;);
 diagnostics.f(expdata$RT, expdata$Accuracy, expdata$SubjectID, expdata$target, expdata$category , &quot;outliers&quot;)</code></pre>
 <div class="figure">
-<img src="outliers.jpg" alt="From the graphs above, we can see several outliers within the subjects and the target words used. As stated in Marjanovic &amp; Crepaldi(2020), subject 13 and target word 39 would be excluded from further analysis. Under the histogram, we can also see some responses with 0.0 response times. These are perhaps trials where no responses were provided, hence these will also be removed." />
-<p class="caption">From the graphs above, we can see several outliers within the subjects and the target words used. As stated in Marjanovic &amp; Crepaldi(2020), subject 13 and target word 39 would be excluded from further analysis. Under the histogram, we can also see some responses with 0.0 response times. These are perhaps trials where no responses were provided, hence these will also be removed.</p>
+<img src="outliers.jpg" alt="From the graphs above, we can see several outliers within the subjects and the target words used. As stated in Marjanovic &amp; Crepaldi (2020), subject 13 and target word 39 would be excluded from further analysis. Under the histogram, we can also see some responses with 0.0 RT. These are perhaps trials where no responses were provided, hence these will also be removed." />
+<p class="caption">From the graphs above, we can see several outliers within the subjects and the target words used. As stated in Marjanovic &amp; Crepaldi (2020), subject 13 and target word 39 would be excluded from further analysis. Under the histogram, we can also see some responses with 0.0 RT. These are perhaps trials where no responses were provided, hence these will also be removed.</p>
 </div>
 <pre class="r"><code>expdata_2 &lt;- subset(expdata, Condition != &#39;nonword&#39; &amp; SubjectID != &#39;13&#39; &amp; target != &#39;39&#39; &amp; RT&gt;0);
 summary(expdata_2)</code></pre>
@@ -583,10 +603,12 @@ summary(expdata_2)</code></pre>
 <div id="experimental-data-descriptive-statistics" class="section level4">
 <h4>Experimental data descriptive statistics</h4>
 <p>Before proceeding with <code>lme4</code>, here are the descriptive statistics (mean RT and accuracy) for four of the different conditions.</p>
-<pre class="r"><code>expdata_2 &lt;- mutate(expdata_2,
+<pre class="r"><code>#convert RT to ms
+expdata_2 &lt;- mutate(expdata_2,
   RTms =
     1000*expdata_2$RT)
 
+#descriptive stats for experiment data
 aggregate(RTms ~ Condition, FUN=mean, data=expdata_2); </code></pre>
 <pre><code>##        Condition     RTms
 ## 1   stem_control 724.0017
@@ -614,7 +636,7 @@ aggregate(RTms ~ Condition, FUN=mean, data=expdata_2); </code></pre>
 </div>
 <div id="lme4-trial" class="section level4">
 <h4>lme4 trial</h4>
-<p>After modifying the dataset, it is time to attempt on <code>lme4</code>. As a first-timer in <code>lme4</code>, it is great that I have the analysis and results from the paper where the data is from, to compare and see whether my analysis is correct.</p>
+<p>After modifying the dataset, it is time to attempt on <code>lme4</code>. As a first-timer in <code>lme4</code>, it is great to have the analysis and results from the paper where the data came from, to compare and see whether my analysis is correct.</p>
 <div id="trial-1" class="section level5">
 <h5>Trial 1</h5>
 <p>Before I begin my first <code>lme4</code> attempt, I watched a <a href="https://youtu.be/9BDA5b-gtbc">tutorial</a> on linear mixed effects model and coding the model with the <code>lme4</code> package on R. With the video, I understood that the model is called <em>mixed effects</em> because of the inclusion of <strong>fixed</strong> and <strong>random</strong> effects. Comparing a linear mixed effect model (lme) to ANOVA, fixed effects and random effects in lme can be thought of as the independent variable and error variable in ANOVA respectively.</p>
@@ -882,7 +904,7 @@ summary(int_lmer_lvl)</code></pre>
 <h5>Trial 4</h5>
 <p>After hours of reading through forums and papers, I realised that perhaps p-values aren’t as straightforward when analysing with <code>lme4</code>. One way to attain p-values with <code>lme4</code> is through comparing models and paying attention to the Likelihood Ratio Test ( <a href="references.html">Winter, 2015</a> ). With main effects, a null model (i.e., without factors that I am interested in) should be created. In my case, it would be a model with the covariate.</p>
 <pre class="r"><code>null &lt;- lmer(invcrt ~ primeFreq + (1|target.x) + (1|SubjectID), data = all, REML = FALSE)</code></pre>
-<p>Then, the model with the factor that I am interested in. This time I tried the condtion factor. I did not analyse interaction here because it needs to be compared with a different null, which I did later on.</p>
+<p>Then, the model with the factor that I am interested in. This time I tried the condition factor. I did not analyse interaction here because it needs to be compared with a different null, which I did later on.</p>
 <pre class="r"><code>cond_lmer &lt;- lmer(invcrt ~ cond+primeFreq+(1|target.x)+(1|SubjectID), data = all, REML = FALSE)</code></pre>
 <p>Next, we compare both models using <code>anova</code></p>
 <pre class="r"><code>anova(null, cond_lmer)</code></pre>
@@ -894,8 +916,15 @@ summary(int_lmer_lvl)</code></pre>
 ## null         5 1258.4 1287.2 -624.19   1248.4                     
 ## cond_lmer    6 1259.9 1294.6 -623.96   1247.9 0.4648  1     0.4954</code></pre>
 <p>Chi Square p-values are not significant. Next I tried to do the same with the relation main effect.</p>
-<pre class="r"><code>relation_lmer &lt;- lmer(invcrt ~ relation+primeFreq+(1|target.x)+(1|SubjectID), data = all, REML = FALSE)
-anova(null, cond_lmer)</code></pre>
+<pre class="r"><code>relation_lmer &lt;- lmer(invcrt ~ relation+primeFreq+(1|target.x)+(1|SubjectID), data = all, REML = FALSE)</code></pre>
+<pre class="r"><code>anova(null, cond_lmer)</code></pre>
+<pre><code>## Data: all
+## Models:
+## null: invcrt ~ primeFreq + (1 | target.x) + (1 | SubjectID)
+## cond_lmer: invcrt ~ cond + primeFreq + (1 | target.x) + (1 | SubjectID)
+##           npar    AIC    BIC  logLik deviance  Chisq Df Pr(&gt;Chisq)
+## null         5 1258.4 1287.2 -624.19   1248.4                     
+## cond_lmer    6 1259.9 1294.6 -623.96   1247.9 0.4648  1     0.4954</code></pre>
 <p>Both yielded results that were not significant which were significant in the paper. However, before I move on to the next trial, I tried to analyse the interaction to see whether this method could give me similar results as what was reported in the paper.</p>
 <p>With comparing interaction, the interaction model should be compared to the model that includes both factors.</p>
 <pre class="r"><code>null_int &lt;- lmer(invcrt ~ cond + relation + primeFreq + (1|target.x) + (1|SubjectID), data = all, REML = FALSE)
@@ -910,7 +939,7 @@ anova(null_int, int_lmer)</code></pre>
 ##          npar    AIC    BIC  logLik deviance  Chisq Df Pr(&gt;Chisq)
 ## null_int    7 1261.7 1302.2 -623.86   1247.7                     
 ## int_lmer    8 1263.7 1309.9 -623.84   1247.7 0.0369  1     0.8476</code></pre>
-<p>Results still aren’t right. Along with that, I am pretty unfamiliar with Chi Square Tests as I’ve never done it before. I wasn’t sure what was wrong. Is it because of my <code>lme4</code> codes? Or is it because my data set is wrong entirely. Hence, in the next trial I decided to start afresh and code a new script based on the original script and see if I can get the same results as reported in the paper.</p>
+<p>Results still aren’t right. Along with that, I am pretty unfamiliar with Chi Square Tests as I’ve never done it before. I wasn’t sure what was wrong. Is it because of my <code>lme4</code> codes? Or is it because my data set is wrong entirely? Hence, in the next trial I decided to start afresh and code a new script based on the original script and see if I can get the same results as reported in the paper.</p>
 </div>
 <div id="trial-5" class="section level5">
 <h5>Trial 5</h5>
@@ -1121,7 +1150,7 @@ hist(data$RT[data$RT&lt;.500 &amp; data$Accuracy==1], breaks=seq(0,.500,.050));<
 <img src="OutliersCheck.jpg" alt="Same output for outliers check." />
 <p class="caption">Same output for outliers check.</p>
 </div>
-<p>Next, is cleaning up the data. One step that I did differently, or at least in different sequence than the researcher. I, for one thing, did not create two subset, but one.</p>
+<p>Next, is cleaning up the data. One step that I did differently, or at least in different sequence than the researcher. I, for one thing, did not create two subsets, but one.</p>
 <pre class="r"><code>#clean data
 dataAcc &lt;- subset(data, Condition != &#39;nonword&#39; &amp; SubjectID != &#39;13&#39; &amp; target != &#39;39&#39; &amp; RT&gt;0);
 summary(dataAcc);</code></pre>
@@ -1274,14 +1303,14 @@ summary(modelRT);</code></pre>
 ## relation:cond   0.0310  1  12.56 0.863025    
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-<p>The next script, the researcher analysed the differences from the outputs, if outliers were excluded from the analysis. However, I decided to not run the remaining script. Prior to this trial, I have copied the exact script with the exact format into a new RSTudio window. I ran the script and results were exactly right and were the values reported on the paper. As the previous <code>Anova</code> analysis did not yield the same results, I decided to terminate this trial.</p>
+<p>The next script, the researcher analysed the differences from the outputs, if outliers were excluded from the analysis. However, I decided to not run the remaining script. Prior to this trial, I have copied the exact script with the exact format into a new RStudio window. I ran the script, and results were exactly right and were the values reported on the paper. As the previous <code>Anova</code> analysis did not yield the same results, I decided to terminate this trial.</p>
 <pre class="r"><code># run the model without the outliers terminated
 modelRTb &lt;- lmer(-1000/RTms ~  relation * cond+ primeFreq  + (1| SubjectID) + (1| target.x ), data=subset(dataRt, abs(scale(resid(modelRT)))&lt;2.5),  REML=T);
 summary(modelRTb)</code></pre>
 </div>
 <div id="trial-6" class="section level5">
 <h5>Trial 6</h5>
-<p>At this point, I am lost and frustrated as I do not know what have I done wrong. One major difference between my script and the original script is the way in which new variables were created. In my script, I have used <code>mutate</code> and <code>ifelse</code> functions, whereas the original script created new variables in a different way. I do not know if this makes any difference and whether it will affect the analysis, but I couldn’t think of anything else that I did differently to the original code in <strong>Trial 5</strong>.</p>
+<p>At this point, I am lost and frustrated as I do not know what I did wrong. One major difference between my script and the original script is the way in which new variables were created. In my script, I have used <code>mutate</code> and <code>ifelse</code> functions, whereas the original script created new variables in a different way. I do not know if this makes any difference and whether it will affect the analysis, but I couldn’t think of anything else that I did differently to the original code in <strong>Trial 5</strong>.</p>
 <p>Hence, being really lost, in this trial, I am very sad (<em>really sad</em>) to say that I will use the <em>exact copy</em> of the original script to conduct the analysis.</p>
 <pre class="r"><code>#import libraries
 library(lmerTest); #for linear mixed modeling
@@ -1307,90 +1336,112 @@ stim1$primeFreq &lt;-as.double(stim1$primeFreq);
 stim1$primeStemLength &lt;- stim1$PrimeLength-stim1$primeSuffixLength;
 stim1$targetStemLength &lt;- stim1$targetLength-stim1$targetSuffixLength;</code></pre>
 <pre class="r"><code>#descriptive stats
-aggregate(targetStemLength ~ condition, FUN=mean, data=stim1);</code></pre>
+tstem_mean &lt;- aggregate(targetStemLength ~ condition, FUN=mean, data=stim1);
+tstem_sd &lt;- aggregate(targetStemLength~ condition, FUN=sd, data = stim1);
+
+prstem_mean &lt;- aggregate(primeStemLength ~ condition, FUN=mean, data=stim1);
+prstem_sd &lt;- aggregate(primeStemLength~ condition, FUN=sd, data = stim1);
+
+tsuffix_mean &lt;- aggregate(targetSuffixLength ~ condition, FUN=mean, data=stim1);
+tsuffix_sd &lt;- aggregate(targetSuffixLength~ condition, FUN=sd, data = stim1);
+
+prsuffix_mean &lt;- aggregate(primeSuffixLength ~ condition, FUN=mean, data=stim1);
+prsuffix_sd &lt;- aggregate(primeSuffixLength~ condition, FUN=sd, data = stim1);
+
+tfq_mean &lt;- aggregate(log10(targetFreq) ~ condition, FUN=mean, data=stim1);
+tfq_sd &lt;- aggregate(log10(targetFreq) ~ condition, FUN=sd, data = stim1);
+
+prfq_mean &lt;- aggregate(log10(primeFreq) ~ condition, FUN=mean, data=stim1);
+prfq_sd &lt;- aggregate(log10(primeFreq) ~ condition, FUN=sd, data = stim1);
+
+orth_mean &lt;- aggregate(orthOverlap ~ condition, FUN=mean, data=stim1);
+orth_sd &lt;- aggregate(orthOverlap~ condition, FUN=sd, data = stim1)
+
+print(tstem_mean)</code></pre>
 <pre><code>##        condition targetStemLength
 ## 1   stem_control            4.325
 ## 2   stem_priming            4.325
 ## 3 suffix_control            4.325
 ## 4 suffix_priming            4.325</code></pre>
-<pre class="r"><code>aggregate(targetStemLength~ condition, FUN=sd, data = stim1);</code></pre>
+<pre class="r"><code>print(tstem_sd)</code></pre>
 <pre><code>##        condition targetStemLength
 ## 1   stem_control         1.118321
 ## 2   stem_priming         1.118321
 ## 3 suffix_control         1.118321
 ## 4 suffix_priming         1.118321</code></pre>
-<pre class="r"><code>aggregate(primeStemLength ~ condition, FUN=mean, data=stim1);</code></pre>
+<pre class="r"><code>print(prstem_mean)</code></pre>
 <pre><code>##        condition primeStemLength
 ## 1   stem_control           4.325
 ## 2   stem_priming           4.325
 ## 3 suffix_control           4.350
 ## 4 suffix_priming           4.325</code></pre>
-<pre class="r"><code>aggregate(primeStemLength~ condition, FUN=sd, data = stim1);</code></pre>
+<pre class="r"><code>print(prstem_sd)</code></pre>
 <pre><code>##        condition primeStemLength
 ## 1   stem_control        1.118321
 ## 2   stem_priming        1.118321
 ## 3 suffix_control        1.098951
 ## 4 suffix_priming        1.118321</code></pre>
-<pre class="r"><code>aggregate(targetSuffixLength ~ condition, FUN=mean, data=stim1);</code></pre>
+<pre class="r"><code>print(tsuffix_mean)</code></pre>
 <pre><code>##        condition targetSuffixLength
 ## 1   stem_control                  2
 ## 2   stem_priming                  2
 ## 3 suffix_control                  2
 ## 4 suffix_priming                  2</code></pre>
-<pre class="r"><code>aggregate(targetSuffixLength~ condition, FUN=sd, data = stim1);</code></pre>
+<pre class="r"><code>print(tsuffix_sd)</code></pre>
 <pre><code>##        condition targetSuffixLength
 ## 1   stem_control                  0
 ## 2   stem_priming                  0
 ## 3 suffix_control                  0
 ## 4 suffix_priming                  0</code></pre>
-<pre class="r"><code>aggregate(primeSuffixLength ~ condition, FUN=mean, data=stim1);</code></pre>
+<pre class="r"><code>print(prsuffix_mean)</code></pre>
 <pre><code>##        condition primeSuffixLength
 ## 1   stem_control                 2
 ## 2   stem_priming                 2
 ## 3 suffix_control                 2
 ## 4 suffix_priming                 2</code></pre>
-<pre class="r"><code>aggregate(primeSuffixLength~ condition, FUN=sd, data = stim1);</code></pre>
+<pre class="r"><code>print(prsuffix_sd)</code></pre>
 <pre><code>##        condition primeSuffixLength
 ## 1   stem_control                 0
 ## 2   stem_priming                 0
 ## 3 suffix_control                 0
 ## 4 suffix_priming                 0</code></pre>
-<pre class="r"><code>aggregate(log10(targetFreq) ~ condition, FUN=mean, data=stim1);</code></pre>
-<pre><code>##        condition log10(targetFreq)
-## 1   stem_control          1.457591
-## 2   stem_priming          1.457591
-## 3 suffix_control          1.457591
-## 4 suffix_priming          1.457591</code></pre>
-<pre class="r"><code>aggregate(log10(targetFreq) ~ condition, FUN=sd, data = stim1);</code></pre>
-<pre><code>##        condition log10(targetFreq)
-## 1   stem_control          0.648854
-## 2   stem_priming          0.648854
-## 3 suffix_control          0.648854
-## 4 suffix_priming          0.648854</code></pre>
-<pre class="r"><code>aggregate(log10(primeFreq) ~ condition, FUN=mean, data=stim1);</code></pre>
+<pre class="r"><code>print(prfq_mean)</code></pre>
 <pre><code>##        condition log10(primeFreq)
 ## 1   stem_control        0.9695187
 ## 2   stem_priming        1.4575912
 ## 3 suffix_control        1.2968365
 ## 4 suffix_priming        1.2968365</code></pre>
-<pre class="r"><code>aggregate(log10(primeFreq) ~ condition, FUN=sd, data = stim1);</code></pre>
+<pre class="r"><code>print(prfq_sd)</code></pre>
 <pre><code>##        condition log10(primeFreq)
 ## 1   stem_control        0.8196274
 ## 2   stem_priming        0.6488540
 ## 3 suffix_control        0.8059078
 ## 4 suffix_priming        0.8059078</code></pre>
-<pre class="r"><code>aggregate(orthOverlap ~ condition, FUN=mean, data=stim1);</code></pre>
+<pre class="r"><code>print(tfq_mean)</code></pre>
+<pre><code>##        condition log10(targetFreq)
+## 1   stem_control          1.457591
+## 2   stem_priming          1.457591
+## 3 suffix_control          1.457591
+## 4 suffix_priming          1.457591</code></pre>
+<pre class="r"><code>print(tfq_sd)</code></pre>
+<pre><code>##        condition log10(targetFreq)
+## 1   stem_control          0.648854
+## 2   stem_priming          0.648854
+## 3 suffix_control          0.648854
+## 4 suffix_priming          0.648854</code></pre>
+<pre class="r"><code>print(orth_mean)</code></pre>
 <pre><code>##        condition orthOverlap
 ## 1   stem_control     0.26825
 ## 2   stem_priming     0.62500
 ## 3 suffix_control     0.13275
 ## 4 suffix_priming     0.42375</code></pre>
-<pre class="r"><code>aggregate(orthOverlap~ condition, FUN=sd, data = stim1)</code></pre>
+<pre class="r"><code>print(orth_sd)</code></pre>
 <pre><code>##        condition orthOverlap
 ## 1   stem_control  0.12180033
 ## 2   stem_priming  0.04602118
 ## 3 suffix_control  0.08972858
 ## 4 suffix_priming  0.09040330</code></pre>
+<pre class="r"><code>#this feels repetitive, wonder if there&#39;s a better way to print multiple data at once</code></pre>
 <p>Descriptive statistics for the stimuli looks okay.</p>
 <pre class="r"><code>#read the data file
 read.csv(file = &quot;Data_Experiment1.csv&quot;, head = TRUE, sep = &quot;,&quot;) -&gt; data1;
@@ -1442,19 +1493,9 @@ summary(data1Rt);
 #convert s to ms on the RT
 data1Rt$RTms &lt;- 1000*data1Rt$RT;</code></pre>
 <pre class="r"><code>#descriptive stats
-aggregate(RTms ~ Condition, FUN=mean, data=data1Rt); </code></pre>
-<pre><code>##        Condition     RTms
-## 1   stem_control 709.8366
-## 2   stem_priming 687.9445
-## 3 suffix_control 738.1724
-## 4 suffix_priming 724.3713</code></pre>
-<pre class="r"><code>aggregate(RTms ~ Condition, FUN=sd, data = data1Rt);</code></pre>
-<pre><code>##        Condition     RTms
-## 1   stem_control 209.8060
-## 2   stem_priming 205.7570
-## 3 suffix_control 227.8008
-## 4 suffix_priming 217.3826</code></pre>
-<pre class="r"><code>#checking medians too, RTs are quite long:
+data_mean &lt;- aggregate(RTms ~ Condition, FUN=mean, data=data1Rt); 
+data_sd &lt;- aggregate(RTms ~ Condition, FUN=sd, data = data1Rt);
+#checking medians too, RTs are quite long:
 aggregate(RTms ~ Condition, FUN=median, data=data1Rt); </code></pre>
 <pre><code>##        Condition RTms
 ## 1   stem_control  662
@@ -1468,13 +1509,28 @@ aggregate(RTms ~ Condition, FUN=median, data=data1Rt); </code></pre>
 ## 3 suffix_control 265.50
 ## 4 suffix_priming 253.75</code></pre>
 <pre class="r"><code>#descriptive stats
-aggregate(Accuracy ~ Condition, FUN=mean, data=data1Acc);</code></pre>
+acc_mean &lt;- aggregate(Accuracy ~ Condition, FUN=mean, data=data1Acc);
+acc_sd &lt;- aggregate(Accuracy ~ Condition, FUN=sd, data=data1Acc)
+
+print(data_mean)</code></pre>
+<pre><code>##        Condition     RTms
+## 1   stem_control 709.8366
+## 2   stem_priming 687.9445
+## 3 suffix_control 738.1724
+## 4 suffix_priming 724.3713</code></pre>
+<pre class="r"><code>print(data_sd)</code></pre>
+<pre><code>##        Condition     RTms
+## 1   stem_control 209.8060
+## 2   stem_priming 205.7570
+## 3 suffix_control 227.8008
+## 4 suffix_priming 217.3826</code></pre>
+<pre class="r"><code>print(acc_mean)</code></pre>
 <pre><code>##        Condition  Accuracy
 ## 1   stem_control 0.9537671
 ## 2   stem_priming 0.9555556
 ## 3 suffix_control 0.9418803
 ## 4 suffix_priming 0.9347079</code></pre>
-<pre class="r"><code>aggregate(Accuracy ~ Condition, FUN=sd, data=data1Acc)</code></pre>
+<pre class="r"><code>print(acc_sd)</code></pre>
 <pre><code>##        Condition  Accuracy
 ## 1   stem_control 0.2101691
 ## 2   stem_priming 0.2062568
@@ -1595,7 +1651,7 @@ summary(model1RTsuf);</code></pre>
 </div>
 <div id="remarks-on-my-attempt-with-lme4" class="section level3">
 <h3>Remarks on my attempt with lme4</h3>
-<p>After several days and 6 trials with analysing a data with <code>lme4</code>, I realised that this is a very complicated package to use and understand. My mind is tired, confused, frustrated that I had to end up using the original script to attain the results. There is so much for me to learn with <code>lme4</code>, and I believe that starting from the bottom, the very beginning in understanding the concept of linear mixed model would be the best choice.</p>
+<p>After several days and six trials with analysing a data with <code>lme4</code>, I realised that this is a very complicated package to use and understand. My mind is tired, confused, frustrated that I had to end up using the original script to attain the results. There is so much for me to learn with <code>lme4</code>, and I believe that starting from the bottom, the very beginning in understanding the concept of linear mixed model would be the best choice.</p>
 <p>Now moving on to <a href="ggplot.html">plotting</a> the results to tables and graphs.</p>
 <style>
 
